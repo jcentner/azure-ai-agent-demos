@@ -4,7 +4,7 @@ This document outlines the steps to demonstrate the sample Azure AI Foundry agen
 
 ## Prerequisites
 
-1. **Azure AI Foundry Project**: An active project in a supported region (`westus`, `westus2`, `uaenorth`, `southindia`, or `switzerlandnorth`) with the `gpt-4o` model deployed.
+1. **Azure AI Foundry Project**: An active project in a supported region (`westus`, `westus2`, `uaenorth`, `southindia`, or `switzerlandnorth`) with the `gpt-4o` model deployed. Reference: [Connect to Model Context Protocol servers (preview)](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol)
 2. **GitHub PAT**: A fine-grained personal access token with read-only permissions to the repositories you want to access.
 3. **Grounding with Bing Search**: A Bing grounding connection configured within your Foundry project and its connection ID.
 4. **Python environment**: Python 3.10+ with packages listed in `requirements.txt`. Use a virtual environment for isolation.
