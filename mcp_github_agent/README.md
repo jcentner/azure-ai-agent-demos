@@ -1,12 +1,11 @@
 # Demo Flow
 
-This document outlines the steps to demonstrate the sample Azure AI Foundry agent configured with the GitHub MCP tool and Bing Grounding.
+This document outlines the steps to demonstrate the sample Azure AI Foundry agent configured with the GitHub MCP tool. 
 
 ## Prerequisites
 
 1. **Azure AI Foundry Project**: An active project in a supported region (`westus`, `westus2`, `uaenorth`, `southindia`, or `switzerlandnorth`) with the `gpt-4o` model deployed. Reference: [Connect to Model Context Protocol servers (preview)](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol)
-2. **GitHub PAT**: A fine-grained personal access token with read-only permissions to the repositories you want to access.
-3. **Grounding with Bing Search**: A Bing grounding connection configured within your Foundry project and its connection ID.
+2. **GitHub PAT or OAuth App**: A fine-grained personal access token with read-only permissions to the repositories you want to access, or an OAuth App. 
 4. **Python environment**: Python 3.10+ with packages listed in `requirements.txt`. Use a virtual environment for isolation.
 
 ## Running the simple MCP demo
@@ -61,3 +60,7 @@ python src/agent_mcp_github_bing.py
 - The PAT is supplied at runtime via tool headers; it is not stored in the agent configuration.
 - The examples rely on default prompt instructions; modify them to suit your scenarios.
 - Both scripts use `create_and_process(...)` to execute the entire run synchronously for simplicity.
+
+## TODO:
+
+Revise these docs. Creation script for each kind of agent, then an inference script to test, with verbose option for output too. 
