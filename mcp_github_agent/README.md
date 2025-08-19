@@ -8,7 +8,7 @@ This document outlines the steps to demonstrate the sample Azure AI Foundry agen
 2. **GitHub PAT or OAuth App**: A fine-grained personal access token with read-only permissions to the repositories you want to access, or an OAuth App. 
 4. **Python environment**: Python 3.10+ with packages listed in `requirements.txt`. Use a virtual environment for isolation.
 
-## Running the simple MCP demo
+## Running the PAT MCP demo
 
 1. Set environment variables:
 
@@ -35,13 +35,11 @@ python src/agent_mcp_github.py
    - Create a thread and ask for the five most recent open issues in a specified repository.
    - Print the assistant’s reply listing those issues.
 
-## Running the MCP + Bing demo
+## Running the OAuth MCP demo
 
-1. Set additional environment variable for the Bing connection:
+1. ... OAUTH INSTRUCTIONS
 
-```
-export AZURE_BING_CONNECTION_ID="/subscriptions/.../connections/<connection_name>"
-```
+... 
 
 2. Run the script:
 
