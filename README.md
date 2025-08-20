@@ -4,9 +4,9 @@ This repository contains sample code and instructions for creating a variety of 
 
 ## Index of Demos
 
-- [/mcp_github_agent](/tree/main/mcp_github_agent): Using an MCP tool to connect to the GitHub public preview MCP server, either with a Personal Authentication Token or using an OAuth app. 
-- [/docs_agent](/tree/main/docs_agent): Using multiple tools (MCP + Bing Grounding) to create an agent grounded by Microsoft Learn documentation for Azure and Microsoft managed GitHub repositories. 
-- [/otel_observable_agent](/tree/main/otel_observable_agent): Integration with OpenTelemetry and Azure App Insights for observability, as well as extreme verbosity in output for debugging. 
+- [/mcp_github_agent](/mcp_github_agent): Using an MCP tool to connect to the GitHub public preview MCP server, either with a Personal Authentication Token or using an OAuth app. 
+- [/docs_agent](/docs_agent): Using multiple tools (MCP + Bing Grounding) to create an agent grounded by Microsoft Learn documentation for Azure and Microsoft managed GitHub repositories. 
+- [/otel_observable_agent](/otel_observable_agent): Integration with OpenTelemetry and Azure App Insights for observability, as well as extreme verbosity in output for debugging. 
 
 ## TODO
 
