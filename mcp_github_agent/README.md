@@ -1,64 +1,69 @@
-# Demo Flow
+# Minimal GitHub MCP Demo (Azure AI Foundry Agents)
 
-This document outlines the steps to demonstrate the sample Azure AI Foundry agent configured with the GitHub MCP tool. 
+Two small scripts that show how to use the **GitHub MCP** tool from an Azure AI Foundry Agent:
+- `create_agent.py` — creates an agent (no secrets persisted).
+- `ask_agent.py` — simple chat loop that streams the agent's reply and prints basic tool activity.
 
-## Prerequisites
+## Setup
 
-1. **Azure AI Foundry Project**: An active project in a supported region (`westus`, `westus2`, `uaenorth`, `southindia`, or `switzerlandnorth`) with the `gpt-4o` model deployed. Reference: [Connect to Model Context Protocol servers (preview)](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol)
-2. **GitHub PAT or OAuth App**: A fine-grained personal access token with read-only permissions to the repositories you want to access, or an OAuth App. 
-4. **Python environment**: Python 3.10+ with packages listed in `requirements.txt`. Use a virtual environment for isolation.
-
-## Running the PAT MCP demo
-
-1. Set environment variables:
-
-```
-export PROJECT_ENDPOINT="https://<foundry>.services.ai.azure.com/api/projects/<project>"
-export MODEL_DEPLOYMENT_NAME="gpt-4o"
-export GITHUB_PAT="<your_read_only_pat>"
-```
-
-2. Install dependencies:
-
-```
+```bash
 pip install -r requirements.txt
+cp .env.sample .env
+# Fill in PROJECT_ENDPOINT and MODEL_DEPLOYMENT_NAME
+# Set GITHUB_OAUTH_TOKEN or GITHUB_PAT (OAuth is preferred if both are set)
 ```
 
-3. Run the script:
+## 1) Create the agent
 
-```
-python src/agent_mcp_github.py
-```
-
-4. The script will:
-   - Create a new agent with the MCP tool.
-   - Create a thread and ask for the five most recent open issues in a specified repository.
-   - Print the assistant’s reply listing those issues.
-
-## Running the OAuth MCP demo
-
-1. ... OAUTH INSTRUCTIONS
-
-... 
-
-2. Run the script:
-
-```
-python src/agent_mcp_github_bing.py
+```bash
+python create_agent.py
 ```
 
-3. This script:
-   - Creates an agent with both GitHub MCP and Bing Grounding tools.
-   - Provides detailed instructions to bias Bing searches toward official Microsoft sources.
-   - Asks the assistant to fetch guidance on using Foundry Agent Service with MCP and list open issues in the `microsoft/azure-ai-projects` repository.
-   - Outputs the assistant’s reply along with citations for web sources.
+This writes the new agent id to `./.agent_id`.
 
-## Notes
+## 2) Chat with the agent
 
-- The PAT is supplied at runtime via tool headers; it is not stored in the agent configuration.
-- The examples rely on default prompt instructions; modify them to suit your scenarios.
-- Both scripts use `create_and_process(...)` to execute the entire run synchronously for simplicity.
+```bash
+python ask_agent.py
+```
 
-## TODO:
+- Type questions like:
+  - `List the 5 most recent open issues in microsoft/vscode`
+  - `Show open PR titles in azure/azure-sdk-for-python`
+- The console shows:
+  - streaming assistant tokens (so you see the reply as it's generated),
+  - basic run/step events,
+  - basic MCP tool call details (server label + tool name).
 
-Revise these docs. Creation script for each kind of agent, then an inference script to test, with verbose option for output too. 
+### Auth
+
+- If `GITHUB_OAUTH_TOKEN` is set, it is used.
+- Else if `GITHUB_PAT` is set, it is used.
+- If neither is set, the run still executes, but GitHub MCP requests will fail.
+
+### Why both PAT and OAuth?
+
+- **PAT** mirrors personal workflows and quick demos.
+- **OAuth** mirrors enterprise SSO/app flows and is closer to production auth practices.
+
+### Notes
+
+- Auth headers are added **at run time** via `tool_resources`; they are **not persisted** on the agent.
+- `create_agent.py` always creates a fresh agent (intentionally no idempotency to keep the demo simple).
+
+
+## Troubleshooting (quick fixes)
+
+- **“Unauthorized” / 401**  
+  Ensure `GITHUB_OAUTH_TOKEN` *or* `GITHUB_PAT` is exported in your shell or present in `.env`.
+
+- **Tool appears unused**  
+  The model may decide not to call a tool for vague prompts. Ask explicitly (e.g., “List the 5 most recent open issues in `<owner>/<repo>`”).
+
+- **Rate limiting / 403 or 429**  
+  Try a different repo or wait; consider using an OAuth token with appropriate quotas.
+
+- **Agent not found**  
+  Run `create_agent.py` again to make a fresh agent and refresh `./.agent_id`.
+
+
