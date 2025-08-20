@@ -11,8 +11,8 @@ This repository contains sample code and instructions for creating a variety of 
 ## TODO
 
 - [x] Demo for GitHub MCP public preview server with PAT
-- [] Demo for GitHub MCP with OAuth
-- [] Demo for GitHub MCP + Bing Grounding ("docs" demo, multi-tool)
-- [] Observability demo building on the docs demo above
-- [] Copilot studio integration with Azure AI Foundry Agent demo 
-- [] More!
+- [ ] Demo for GitHub MCP with OAuth
+- [ ] Demo for GitHub MCP + Bing Grounding ("docs" demo, multi-tool)
+- [ ] Observability demo building on the docs demo above
+- [ ] Copilot studio integration with Azure AI Foundry Agent demo 
+- [ ] More!
