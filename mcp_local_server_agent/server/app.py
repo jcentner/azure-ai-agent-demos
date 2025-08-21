@@ -31,8 +31,8 @@ def build_mcp(db: Database) -> FastMCP:
 
 
 def main():
-    cfg = load_config()
     load_dotenv()
+    cfg = load_config()
     setup_logging(cfg.LOG_LEVEL)
 
     base_path, working_path = ensure_working_copy(
