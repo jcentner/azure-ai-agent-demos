@@ -127,7 +127,7 @@ Try the following:
 
 - **Tools → `list_tables`**  
   Expect a list of Chinook tables (Album, Artist, Customer, Invoice, …).
-- **Resource → `schema://current`**  
+- **Resource → `schema_snapshot`**  
   Browse schema metadata.
 - **Prompt → `explain_query_purpose`**  
   Paste a `SELECT` to see a short explanation.

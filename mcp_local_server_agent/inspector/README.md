@@ -110,12 +110,13 @@ Once connected:
   Expect a list like `Album`, `Artist`, `Customer`, `Invoice`, …
 - **Tools → `top_customers`** → set `limit=5` → **Run**  
   Expect top 5 customers by total invoice amount.
-- **Resources → `schema://current`** → **Open**  
+- **Resources → `schema_snapshot`** → **Open**  
   View the discovered schema for quick orientation.
 - **Prompts → `explain_query_purpose`** → input a SQL string → **Run**  
   Get a natural-language explanation of the query.
+- **[Additional tests from the server README](https://github.com/jcentner/azure-ai-agent-demos/tree/main/mcp_local_server_agent/server#verify-with-mcp-inspector-local)**
 
-> Write operations are demonstrated in the **server** guide (e.g., insert/update via `run_sql`), not from Inspector by default.
+> Write operations are demonstrated in the **server** guide linked above (e.g., insert/update via `run_sql_write`).
 
 ---
 
