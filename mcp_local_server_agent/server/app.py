@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 
 from starlette.applications import Starlette
-from starlette.middleware import Middleware
 import uvicorn
 
 from mcp.server.fastmcp import FastMCP
@@ -46,22 +45,22 @@ def main():
 
     mcp = build_mcp(db)
 
-    # MCP provides a Starlette app whose routes include /mcp
-    inner = mcp.streamable_http_app()
+    # Build the inner Starlette app from MCP and use it directly so its lifespan runs.
+    app: Starlette = mcp.streamable_http_app()
 
-    # Keep auth scoped to /mcp but mount the inner app at root
-    middleware = [
-        Middleware(BearerAuthMiddleware, token=cfg.LOCAL_MCP_TOKEN, mount_path="/mcp"),
-    ]
-
-    app = Starlette(middleware=middleware)
-    app.mount("/", inner)
+    # Apply auth middleware on the MCP paths (e.g., /mcp ...).
+    app.add_middleware(
+        BearerAuthMiddleware,
+        token=cfg.LOCAL_MCP_TOKEN,
+        mount_path="/mcp",
+    )
 
     logging.getLogger(__name__).info(
         "Starting MCP server on http://0.0.0.0:%d/mcp", cfg.PORT
     )
     new_request_id()
-    uvicorn.run(app, host="0.0.0.0", port=cfg.PORT)
+    # Ensure lifespan runs on this app by giving it directly to Uvicorn.
+    uvicorn.run(app, host="0.0.0.0", port=cfg.PORT, lifespan="auto")
 
 
 if __name__ == "__main__":
