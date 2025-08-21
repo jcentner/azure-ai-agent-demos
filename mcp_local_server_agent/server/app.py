@@ -49,7 +49,7 @@ def main():
         Middleware(BearerAuthMiddleware, token=cfg.LOCAL_MCP_TOKEN, mount_path="/mcp"),
     ]
     inner = mcp.streamable_http_app()
-    app = Starlette(middleware=middleware)
+    app = Starlette(middleware=middleware, lifespan=inner.lifespan)
     app.mount("/", inner)
 
     logging.getLogger(__name__).info("Starting MCP server on http://0.0.0.0:%d/mcp", cfg.PORT)
