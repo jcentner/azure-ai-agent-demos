@@ -5,7 +5,7 @@ A local **MCP server** that exposes **SQLite (Chinook)** data over **Streamable 
 - **Usable by an Azure AI Agent** over a URL (e.g., via ngrok)
 - **Safe for demos**: all **writes** go to a **working copy**, keeping the base dataset pristine
 
-> Scope: This guide covers the server only (no code shown here). See `../inspector/README.md` for Inspector usage and `../agent/README.md` for the Azure Agent flow.
+> Scope: This guide covers the server only. See `../inspector/README.md` for Inspector usage and `../agent/README.md` for the Azure Agent flow.
 
 ---
 
@@ -242,5 +242,5 @@ You’ll use this URL with your Azure AI Agent in `../agent/README.md`.
 ## Next steps
 
 1. Confirm you can connect locally with the Inspector.
-2. (Optional) Expose the server via ngrok and re-verify.
+2. Expose the server via ngrok and re-verify.
 3. Proceed to `../agent/README.md` to connect your Azure AI Agent to the ngrok URL.
