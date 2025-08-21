@@ -17,18 +17,55 @@ This guide shows how to run the **MCP Inspector**, connect it to the sample MCP 
 
 ## Prerequisites
 
-- **Node.js** available on your machine (so `npx` works).
+- **Node.js** available on your machine (so `npx` works); see below. 
 - Your **local MCP server** running (you’ll start it from `../server` in the next step of the demo).  
-  - Default URL used throughout this repo: `http://localhost:8787/mcp`
+  - Default URL used throughout this demo: `http://localhost:8787/mcp`
 - If you enable bearer auth on your server, have a token ready (e.g., from `LOCAL_MCP_TOKEN` in your `.env`).
 
 > You do **not** need to install the Inspector globally.
 
+### Get Node.js & `npx`
+
+You need **Node.js LTS** (which includes `npm` and `npx`). Pick one path:
+
+#### macOS (Homebrew)
+
+~~~bash
+brew install node
+node -v && npm -v && npx --version
+~~~
+
+#### Windows (Winget, PowerShell)
+
+~~~powershell
+winget install OpenJS.NodeJS.LTS
+node -v; npm -v; npx --version
+~~~
+
+(Alternative: `choco install nodejs-lts` if you use Chocolatey.)
+
+#### Ubuntu/Debian (APT)
+
+~~~bash
+sudo apt-get update
+sudo apt-get install -y nodejs npm
+node -v && npm -v && npx --version
+~~~
+
+> Tip: If `node -v` prints an old version, consider using **nvm** to install the latest LTS.
+
+#### Troubleshooting
+
+- **`npx: command not found`** → Node.js/npm isn’t on `PATH` or too old. Reinstall Node.js LTS, then re-open your terminal.
+- **Corporate machines** → If you can’t use package managers, install Node.js LTS from your IT software catalog or the standard installer for your OS; ensure `node`, `npm`, and `npx` are available in a new terminal.
+
+Once `npx` works, continue with the Quickstart below. 
+
 ---
 
-## Quick start
+## Quickstart
 
-From the repo root (or from this folder):
+From the repo root (or from this folder), no further install necessary:
 
 ~~~bash
 # Launch the MCP Inspector UI
@@ -106,7 +143,7 @@ In the Inspector UI, create a new connection:
   The server may have failed to initialize or the transport is wrong. Confirm the server’s logs and that you selected **Streamable HTTP**.
 - **ngrok 502/connection failed**  
   Check that your local server is running on the port you exposed, and that you used the **HTTPS** ngrok URL.
-
+  
 ---
 
 ## Clean up

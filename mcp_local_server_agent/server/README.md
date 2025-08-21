@@ -100,7 +100,7 @@ Install the server’s dependencies:
 # (optional) python -m venv .venv && source .venv/bin/activate
 pip install -r server/requirements.txt
 
-# run the server
+# run the server (from the demo root folder)
 python -m server.app
 ~~~
 
