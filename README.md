@@ -16,5 +16,5 @@ This repository contains sample code and instructions for creating a variety of 
 - [ ] Copilot studio integration with agent (Teams bot to add RBAC roles for users, grounded with policy (Fabric?), logged, permission approval) 
 
 <p align="center">
-  <img src="assets/agent-avatar.png" alt="Azure AI Agent avatar" width="480">
+  <img src="assets/agent-avatar.png" alt="Azure AI Agent avatar" width="360">
 </p>
