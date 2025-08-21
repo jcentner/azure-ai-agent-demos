@@ -117,7 +117,7 @@ python -m server.app
 
 ## Verify with MCP Inspector (local)
 
-Follow `../inspector/README.md`, then connect the Inspector to:
+Follow [../inspector/README.md](../inspector/), then connect the Inspector to:
 
 - **Transport**: `Streamable HTTP`  
 - **Server URL**: `http://localhost:8787/mcp`  
