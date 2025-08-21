@@ -5,7 +5,6 @@ import logging
 
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
-from starlette.routing import Mount
 import uvicorn
 
 from mcp.server.fastmcp import FastMCP
@@ -36,7 +35,9 @@ def main():
     setup_logging(cfg.LOG_LEVEL)
 
     base_path, working_path = ensure_working_copy(
-        base_path=cfg.DB_BASE_PATH, working_dir=cfg.DB_WORKING_DIR, persist=cfg.PERSIST_WORKING_COPY
+        base_path=cfg.DB_BASE_PATH,
+        working_dir=cfg.DB_WORKING_DIR,
+        persist=cfg.PERSIST_WORKING_COPY,
     )
     logging.getLogger(__name__).info("DB base=%s working=%s", base_path, working_path)
 
@@ -45,16 +46,20 @@ def main():
 
     mcp = build_mcp(db)
 
+    # MCP provides a Starlette app whose routes include /mcp
+    inner = mcp.streamable_http_app()
+
+    # Keep auth scoped to /mcp but mount the inner app at root
     middleware = [
         Middleware(BearerAuthMiddleware, token=cfg.LOCAL_MCP_TOKEN, mount_path="/mcp"),
     ]
-    inner = mcp.streamable_http_app()
-    app = Starlette(middleware=[
-        Middleware(BearerAuthMiddleware, token=cfg.LOCAL_MCP_TOKEN, mount_path="/mcp"),
-    ])
-    app.mount("/mcp", inner)  # was "/"
 
-    logging.getLogger(__name__).info("Starting MCP server on http://0.0.0.0:%d/mcp", cfg.PORT)
+    app = Starlette(middleware=middleware)
+    app.mount("/", inner)
+
+    logging.getLogger(__name__).info(
+        "Starting MCP server on http://0.0.0.0:%d/mcp", cfg.PORT
+    )
     new_request_id()
     uvicorn.run(app, host="0.0.0.0", port=cfg.PORT)
 
