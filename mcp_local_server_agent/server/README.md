@@ -69,11 +69,11 @@ server/
 
 ## Configuration
 
-Use a single demo-root `.env` for both **server** and **agent** settings (recommended). Start from the sample at `../.env.sample`:
+Use the single demo-root `.env` for both **server** and **agent** settings. Start from the sample at `../.env.sample`:
 
 ~~~bash
 cp .env.sample .env
-# Edit .env and set values as needed
+# Edit .env and set values as needed. Remember to source it or manually export the needed variables. 
 ~~~
 
 Server-relevant variables:
@@ -94,7 +94,7 @@ Server-relevant variables:
 
 ## Install & run (server-only)
 
-Install only the server’s dependencies:
+Install the server’s dependencies:
 
 ~~~bash
 # (optional) python -m venv .venv && source .venv/bin/activate
@@ -104,15 +104,14 @@ pip install -r server/requirements.txt
 python -m server.app
 ~~~
 
+> If you intend to use the agent piece of the demo as well, pip install the root `requirements.txt` instead. 
+
 **Expected on first run**
 - Creates `server/db/working/` (if missing)
 - Copies `chinook.db` → `chinook.work.sqlite`
 - Enables foreign keys, WAL mode, runs a quick integrity check
 - Registers tools/resources/prompts
 - Listens on `http://localhost:8787/mcp`
-
-> If you prefer a single install for the whole repo, create a root `requirements.txt` with:  
-> `-r server/requirements.txt` and `-r agent/requirements.txt`.
 
 ---
 
