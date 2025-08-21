@@ -46,14 +46,13 @@ def main():
     mcp = build_mcp(db)
 
     middleware = [
-        Middleware(BearerAuthMiddleware, token=cfg.LOCAL_MCP_TOKEN, mount_path=cfg.MCP_PATH),
+        Middleware(BearerAuthMiddleware, token=cfg.LOCAL_MCP_TOKEN, mount_path="/mcp"),
     ]
-    app = Starlette(
-        routes=[Mount(cfg.MCP_PATH, app=mcp.streamable_http_app())],
-        middleware=middleware,
-    )
+    inner = mcp.streamable_http_app()
+    app = Starlette(middleware=middleware)
+    app.mount("/", inner)
 
-    logging.getLogger(__name__).info("Starting MCP server on http://0.0.0.0:%d%s", cfg.PORT, cfg.MCP_PATH)
+    logging.getLogger(__name__).info("Starting MCP server on http://0.0.0.0:%d/mcp", cfg.PORT)
     new_request_id()
     uvicorn.run(app, host="0.0.0.0", port=cfg.PORT)
 

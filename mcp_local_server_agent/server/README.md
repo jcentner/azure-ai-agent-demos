@@ -200,16 +200,69 @@ Verify writes with a subsequent **`run_sql`** `SELECT`.
 
 ## Expose via ngrok (for Agent usage)
 
-From a separate terminal:
+You’ll create a public HTTPS URL for your local MCP server at `http://localhost:8787/mcp`.
+
+### 1) Install ngrok (one-time)
+
+Pick the method for your OS:
+
+**macOS (Homebrew)**  
+~~~bash
+brew install ngrok/ngrok/ngrok
+ngrok version
+~~~
+
+**Windows (Winget, PowerShell)**  
+~~~powershell
+winget install Ngrok.Ngrok
+ngrok version
+~~~
+(Alternative: `choco install ngrok` if you use Chocolatey.)
+
+**Ubuntu/Debian (APT)**  
+~~~bash
+# If ngrok is available via your repo:
+sudo apt-get update
+sudo apt-get install -y ngrok
+ngrok version
+~~~
+(If your APT repo doesn’t carry ngrok, download the official binary and place it on your PATH.)
+
+### 2) Add your authtoken (one-time)
+
+Create a free ngrok account, copy your **authtoken** from the dashboard, then:
+
+~~~bash
+ngrok config add-authtoken <YOUR_NGROK_AUTHTOKEN>
+~~~
+
+This writes the token to `~/.config/ngrok/ngrok.yml` (or `%HOMEPATH%\.config\ngrok\ngrok.yml` on Windows).
+
+### 3) Start the tunnel
+
+In a separate terminal:
 
 ~~~bash
 ngrok http 8787
 ~~~
 
-Copy the **HTTPS** forwarding URL (e.g., `https://<sub>.ngrok.app`) and use:
+Copy the **HTTPS** forwarding URL that ngrok prints (for example, `https://<sub>.ngrok.app`).
 
-- **Server URL** for remote connections: `https://<sub>.ngrok.app/mcp`
-- If you set a token, include: `Authorization: Bearer <YOUR_LOCAL_MCP_TOKEN>`
+### 4) Use the URL
+
+- **Server URL** for remote connections:  
+  `https://<sub>.ngrok.app/mcp`
+- If you set a token in `.env`, include the header in your client:  
+  `Authorization: Bearer <YOUR_LOCAL_MCP_TOKEN>`
+
+You can now connect with **MCP Inspector** (transport: *Streamable HTTP*) or point your **Azure AI Agent** at this URL.
+
+### Notes
+
+- Do **not** tunnel the MCP Inspector itself; only tunnel the server port (8787).
+- If you see `502` or connection failures, ensure the server is running locally, and that you’re using the **HTTPS** URL with the **`/mcp`** path.
+- Optional advanced setup (reserved domains, IP allowlists, YAML config) can be added later; not required for this demo.
+
 
 You’ll use this URL with your Azure AI Agent in `../agent/README.md`.
 

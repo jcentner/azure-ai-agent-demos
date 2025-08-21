@@ -52,7 +52,8 @@ sudo apt-get install -y nodejs npm
 node -v && npm -v && npx --version
 ~~~
 
-> Tip: If `node -v` prints an old version, consider using **nvm** to install the latest LTS.
+> Tip: If `node -v` prints an old version, consider using **nvm** to install the latest LTS. The MCP Inspector requires Node ≥ 22.7.5
+> 
 
 #### Troubleshooting
 
@@ -65,14 +66,14 @@ Once `npx` works, continue with the Quickstart below.
 
 ## Quickstart
 
-From the repo root (or from this folder), no further install necessary:
+From the repo root (or from this folder):
 
 ~~~bash
 # Launch the MCP Inspector UI
 npx @modelcontextprotocol/inspector@latest
 ~~~
 
-The CLI will print the local web address for the Inspector UI. Open it in your browser.
+The CLI will print the local web address for the Inspector UI. Open it in your browser if it doesn't open automatically. 
 
 ---
 
