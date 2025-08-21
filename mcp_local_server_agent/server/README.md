@@ -12,9 +12,9 @@ A local **MCP server** that exposes **SQLite (Chinook)** data over **Streamable 
 ## What the server exposes
 
 **Transport**
-- Streamable HTTP on `http://localhost:8787/mcp` (defaults shown; configurable via env)
+- Streamable HTTP on `http://localhost:8787/mcp` (default port and path shown; configurable via env)
 
-**Tools (consolidated)**
+**Tools**
 - `list_tables()` — list tables and row counts  
 - `get_table_info(table)` — columns, PKs, basic info  
 - `run_sql(query, params?)` — **read-only**; rejects non-SELECT  
@@ -50,12 +50,12 @@ server/
 
 ---
 
-## How writes are kept safe
+## Safe writes
 
-- The **base dataset** (`server/db/chinook.db`) is **never modified**.
-- On startup, the server creates a **working copy** at `server/db/working/chinook.work.sqlite` and directs **all writes** there.
+- The base dataset (`server/db/chinook.db`) is, by default, **never modified**.
+- On startup, the server creates a **working copy** at `server/db/working/chinook.work.sqlite` and directs all writes there.
 - Stop/start to reset (the working copy is recreated from the base file).
-- Optional config lets you persist the working copy across runs.
+- Optional config allows persistance of the working copy across runs.
 
 ---
 
@@ -69,7 +69,7 @@ server/
 
 ## Configuration
 
-Use a single repo-root `.env` for both **server** and **agent** settings (recommended). Start from the sample:
+Use a single demo-root `.env` for both **server** and **agent** settings (recommended). Start from the sample at `../.env.sample`:
 
 ~~~bash
 cp .env.sample .env
