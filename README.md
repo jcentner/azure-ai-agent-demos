@@ -15,4 +15,6 @@ This repository contains sample code and instructions for creating a variety of 
 - [ ] Observability demo (App Insights, per-delta verbose output)
 - [ ] Copilot studio integration with agent (Teams bot to add RBAC roles for users, grounded with policy (Fabric?), logged, permission approval) 
 
-![Azure AI Agent avatar](assets/agent-avatar.png)
+<p align="center">
+  <img src="assets/agent-avatar.png" alt="Azure AI Agent avatar" width="480">
+</p>
