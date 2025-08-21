@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Sequence
 
@@ -12,7 +13,42 @@ from ..db.client import Database, is_select, is_write, execute_read, execute_wri
 _email_re = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
+@dataclass(frozen=True)
+class TableNames:
+    customers: str
+    invoices: str
+    invoice_items: str
+
+
+def _has_table(con, name: str) -> bool:
+    row = con.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name = :n LIMIT 1;", {"n": name}
+    ).fetchone()
+    if row:
+        return True
+    # also try case-insensitive match for robustness
+    row = con.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND lower(name) = lower(:n) LIMIT 1;", {"n": name}
+    ).fetchone()
+    return bool(row)
+
+
+def _pick_table(con, *candidates: str) -> str:
+    for cand in candidates:
+        if _has_table(con, cand):
+            return cand
+    raise RuntimeError(f"None of the candidate tables exist: {candidates!r}")
+
+
 def register(mcp: FastMCP, db: Database) -> None:
+    # Detect table naming variant once at startup (works for both classic and snake_case Chinook)
+    with db.transaction() as con:
+        tn = TableNames(
+            customers=_pick_table(con, "customers", "Customer"),
+            invoices=_pick_table(con, "invoices", "Invoice"),
+            invoice_items=_pick_table(con, "invoice_items", "InvoiceLine"),
+        )
+
     # ---------- Tables ----------
     @mcp.tool()
     def list_tables() -> dict[str, Any]:
@@ -86,8 +122,8 @@ def register(mcp: FastMCP, db: Database) -> None:
             raise ValueError("Invalid email format.")
         with db.transaction() as con:
             cur = con.execute(
-                """
-                INSERT INTO Customer (FirstName, LastName, Email, City, Country)
+                f"""
+                INSERT INTO {tn.customers} (FirstName, LastName, Email, City, Country)
                 VALUES (:fn, :ln, :em, :city, :country)
                 """,
                 {"fn": first_name, "ln": last_name, "em": email, "city": city, "country": country},
@@ -101,7 +137,7 @@ def register(mcp: FastMCP, db: Database) -> None:
             raise ValueError("Invalid email format.")
         with db.transaction() as con:
             cur = con.execute(
-                "UPDATE Customer SET Email = :em WHERE CustomerId = :cid",
+                f"UPDATE {tn.customers} SET Email = :em WHERE CustomerId = :cid",
                 {"em": new_email, "cid": customer_id},
             )
             return {"affected_rows": int(cur.rowcount or 0)}
@@ -114,10 +150,10 @@ def register(mcp: FastMCP, db: Database) -> None:
             raise ValueError("limit must be between 1 and 100")
         with db.transaction() as con:
             rows = con.execute(
-                """
+                f"""
                 SELECT c.CustomerId, c.FirstName, c.LastName, c.Email, IFNULL(SUM(i.Total), 0.0) AS TotalSpent
-                FROM Customer c
-                LEFT JOIN Invoice i ON i.CustomerId = c.CustomerId
+                FROM {tn.customers} c
+                LEFT JOIN {tn.invoices} i ON i.CustomerId = c.CustomerId
                 GROUP BY c.CustomerId
                 ORDER BY TotalSpent DESC, c.CustomerId ASC
                 LIMIT :lim
@@ -153,9 +189,9 @@ def register(mcp: FastMCP, db: Database) -> None:
             total = sum(float(it["unit_price"]) * int(it["quantity"]) for it in items)
             now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
             cur = con.execute(
-                """
-                INSERT INTO Invoice (CustomerId, InvoiceDate, BillingAddress, BillingCity,
-                                     BillingState, BillingCountry, BillingPostalCode, Total)
+                f"""
+                INSERT INTO {tn.invoices} (CustomerId, InvoiceDate, BillingAddress, BillingCity,
+                                           BillingState, BillingCountry, BillingPostalCode, Total)
                 VALUES (:cid, :dt, :addr, :city, :state, :country, :zip, :total)
                 """,
                 {
@@ -173,8 +209,8 @@ def register(mcp: FastMCP, db: Database) -> None:
 
             for it in items:
                 con.execute(
-                    """
-                    INSERT INTO InvoiceLine (InvoiceId, TrackId, UnitPrice, Quantity)
+                    f"""
+                    INSERT INTO {tn.invoice_items} (InvoiceId, TrackId, UnitPrice, Quantity)
                     VALUES (:iid, :tid, :price, :qty)
                     """,
                     {
