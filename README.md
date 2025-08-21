@@ -1,4 +1,4 @@
-# Azure AI Foundry Agents Demos
+# Azure AI Foundry Agents Demos - WIP
 
 This repository contains sample code and instructions for creating a variety of simple Azure AI Foundry Agents. Demos include those for using tools like Grounding with Bing Search, MCP servers, and OpenAPI schemas. Also included are walkthroughs for enterprise features like observability, secure networking, and more.
 
@@ -14,3 +14,5 @@ This repository contains sample code and instructions for creating a variety of 
 - [x] Local MCP server, inspector, and agent connection 
 - [ ] Observability demo (App Insights, per-delta verbose output)
 - [ ] Copilot studio integration with agent (Teams bot to add RBAC roles for users, grounded with policy (Fabric?), logged, permission approval) 
+
+![Azure AI Agent avatar](assets/agent-avatar.png)
