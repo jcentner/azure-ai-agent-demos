@@ -25,7 +25,7 @@ A local **MCP server** that exposes **SQLite (Chinook)** data over **Streamable 
 - `create_invoice(customer_id, items[])` — transactional insert of invoice + invoice_lines
 
 **Resource**
-- `schema://current` — introspected database schema (tables, columns, FKs)
+- `schema_snapshot` — introspected database schema (tables, columns, FKs)
 
 **Prompt**
 - `explain_query_purpose(sql)` — a terse natural-language explanation of a SQL statement
@@ -73,7 +73,7 @@ Use the single demo-root `.env` for both **server** and **agent** settings. Star
 
 ~~~bash
 cp .env.sample .env
-# Edit .env and set values as needed. Remember to source it or manually export the needed variables. 
+# Edit .env and set values as needed. The server loads .env on start.
 ~~~
 
 Server-relevant variables:

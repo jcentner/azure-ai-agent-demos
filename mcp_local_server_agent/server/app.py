@@ -9,6 +9,7 @@ import uvicorn
 from mcp.server.fastmcp import FastMCP
 
 from .config import load_config
+from dotenv import load_dotenv
 from .logging import setup_logging, new_request_id
 from .db.init import ensure_working_copy, integrity_check
 from .db.client import Database
@@ -31,6 +32,7 @@ def build_mcp(db: Database) -> FastMCP:
 
 def main():
     cfg = load_config()
+    load_dotenv()
     setup_logging(cfg.LOG_LEVEL)
 
     base_path, working_path = ensure_working_copy(
