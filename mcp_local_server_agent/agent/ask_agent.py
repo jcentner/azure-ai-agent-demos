@@ -1,22 +1,30 @@
 #!/usr/bin/env python3
+# agent/ask_agent.py
 """
 ask_agent.py — Minimal interactive chat loop that prints what the agent is doing.
 
 What it shows:
-- How to attach GitHub MCP auth (OAuth or PAT) at run-time 
+- How to attach MCP auth (Bearer token) at run-time
 - How to stream a run and see message tokens + tool call steps
 - A tiny REPL: type a prompt, see streaming output, '/exit' to quit
 
 Auth behavior:
-- If GITHUB_OAUTH_TOKEN is set, it's used.
-- Else if GITHUB_PAT is set, it's used.
-- Else, the run will proceed but MCP calls will fail due to missing auth.
+- If LOCAL_MCP_TOKEN is set, it is used as "Authorization: Bearer <token>" for MCP calls.
+- Else, the run proceeds but MCP calls will fail if your server requires auth.
+
+Env (read from .env via python-dotenv):
+- PROJECT_ENDPOINT           (required)
+- AGENT_ID                   (optional; else read from ./.agent_id)
+- MCP_SERVER_URL             (required in Azure; e.g., https://<sub>.ngrok.app/mcp)
+- LOCAL_MCP_TOKEN            (optional; recommended if server enforces auth)
 """
+
+from __future__ import annotations
 
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 from azure.ai.agents.models import (
@@ -26,6 +34,21 @@ from azure.ai.agents.models import (
     MessageDeltaChunk,
     RunStep,
 )
+
+
+def resolve_server_url_or_warn(raw: str | None) -> tuple[str, bool]:
+    """
+    Return (url, ok). If MCP_SERVER_URL is missing, return an intentionally invalid URL
+    and ok=False so callers can warn/pause but still proceed for demo purposes.
+    Ensures the returned URL ends with '/mcp'.
+    """
+    if not raw or not raw.strip():
+        return "https://example.invalid/mcp", False
+    raw = raw.strip()
+    if not raw.rstrip("/").endswith("/mcp"):
+        raw = raw.rstrip("/") + "/mcp"
+    return raw, True
+
 
 # --- Minimal event handler to show what the agent is doing -----------------
 class ConsoleEvents(AgentEventHandler):
@@ -55,44 +78,48 @@ class ConsoleEvents(AgentEventHandler):
                     print(f"    mcp.server_label={getattr(mcp, 'server_label', None)} name={getattr(mcp, 'name', None)}")
 
 
-def pick_token() -> tuple[str | None, str | None]:
-    """
-    Prefer OAuth token if present, otherwise PAT. Returns (token, source_env_name).
-    If neither is set, returns (None, None).
-    """
-    oauth = os.getenv("GITHUB_OAUTH_TOKEN")
-    if oauth:
-        return oauth, "GITHUB_OAUTH_TOKEN"
-    pat = os.getenv("GITHUB_PAT")
-    if pat:
-        return pat, "GITHUB_PAT"
-    return None, None
-
-
 def main():
-    load_dotenv()
+    # Load repo-root .env
+    load_dotenv(find_dotenv())
 
     endpoint = os.environ["PROJECT_ENDPOINT"]
+
     # Agent id comes from .agent_id (created by create_agent.py), or env override
     agent_id = os.getenv("AGENT_ID") or Path(".agent_id").read_text(encoding="utf-8").strip()
 
-    # Connect to the project
-    project = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
+    # MCP server URL (must be reachable from Azure; localhost won't work there)
+    server_url, has_server_url = resolve_server_url_or_warn(os.getenv("MCP_SERVER_URL"))
+    if not has_server_url:
+        print("[config] ERROR: MCP_SERVER_URL is not set in ../.env")
+        print("         When running in Azure, a localhost URL will NOT be reachable.")
+        print("         Set MCP_SERVER_URL to your public MCP endpoint (e.g., your ngrok https URL + '/mcp').")
+        try:
+            input("Press Enter to CONTINUE with an intentionally invalid URL (this will fail), or Ctrl+C to abort...")
+        except (EOFError, KeyboardInterrupt):
+            pass
+    print(f"[config] Using MCP server URL: {server_url}")
 
     # Rebuild the MCP tool, but for inference, attach auth headers AT RUN TIME (not persisted)
-    mcp = McpTool(server_label="github", server_url="https://api.githubcopilot.com/mcp/")
-    token, src = pick_token()
+    mcp = McpTool(server_label="chinook", server_url=server_url)
+
+    token = os.getenv("LOCAL_MCP_TOKEN")
     if token:
         mcp.update_headers("Authorization", f"Bearer {token}")
-        print(f"[auth] Using {src}")
+        print("[auth] Using LOCAL_MCP_TOKEN for MCP Authorization header")
     else:
-        print("[auth] No GITHUB_OAUTH_TOKEN or GITHUB_PAT set — GitHub MCP calls will fail.")
-    mcp.set_approval_mode("never")  # skip approval prompts for a smooth demo
+        print("[auth] No LOCAL_MCP_TOKEN set — MCP calls will fail if your server requires auth.")
 
-    # Create a single thread for the chat session
+    # Skip approval prompts for a smooth demo
+    mcp.set_approval_mode("never")
+
+    # Connect to the project and run a simple REPL
+    project = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
     with project:
         thread = project.agents.threads.create()
-        print("Chat ready. Type your question (e.g., 'List 5 open issues in microsoft/vscode'), or '/exit' to quit.\n")
+        print("\nChat ready. Try prompts like:")
+        print("  - list top customers")
+        print("  - create a new customer, then show them")
+        print("Type '/exit' to quit.\n")
 
         while True:
             try:
@@ -107,7 +134,7 @@ def main():
                 print("Goodbye.")
                 break
 
-            # Add the user message to the thread
+            # Add the user message
             project.agents.messages.create(thread_id=thread.id, role="user", content=user)
 
             # Stream the run so you can see tokens + tool calls live
@@ -116,11 +143,12 @@ def main():
                 thread_id=thread.id,
                 agent_id=agent_id,
                 event_handler=handler,
-                tool_resources=mcp.resources,  # <-- runtime-only auth & headers
+                tool_resources=mcp.resources,  # runtime-only auth & headers
             ) as stream:
                 handler.until_done()  # block until completion
 
-            print()  # add a newline after the streamed reply
+            print()  # newline after streamed reply
+
 
 if __name__ == "__main__":
     main()

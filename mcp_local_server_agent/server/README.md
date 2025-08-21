@@ -97,8 +97,8 @@ Server-relevant variables:
 Install the server’s dependencies:
 
 ~~~bash
-# (optional) python -m venv .venv && source .venv/bin/activate
-pip install -r server/requirements.txt
+# (recommended) python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
 
 # run the server (from the demo root folder)
 python -m server.app
@@ -226,7 +226,7 @@ sudo apt-get update
 sudo apt-get install -y ngrok
 ngrok version
 ~~~
-(If your APT repo doesn’t carry ngrok, download the official binary and place it on your PATH.)
+(If your APT repo doesn’t carry ngrok, see the [ngrok Linux install instructions](https://ngrok.com/downloads/linux))
 
 ### 2) Add your authtoken (one-time)
 
@@ -278,8 +278,8 @@ You’ll use this URL with your Azure AI Agent in `../agent/README.md`.
   Close other processes; if needed, stop the server, delete the working copy, and restart.
 - **Writes appear not to persist**  
   Default behavior discards changes on restart. Set `PERSIST_WORKING_COPY=true` to persist.
-- **ngrok 502 or connection failed**  
-  Verify the local server is running on `8787`, and that you’re connecting to the **HTTPS** ngrok URL with **`/mcp`**.
+- **ngrok 502, "Connection Error - Check if your MCP server is running and proxy token is correct"**  
+  Verify the local server is running on `8787`, and that you’re connecting to the **HTTPS** ngrok URL with the **`/mcp`** path added.
 
 ---
 
