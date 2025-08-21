@@ -117,6 +117,7 @@ def main():
     with project:
         thread = project.agents.threads.create()
         print("\nChat ready. Try prompts like:")
+        print("  - tell me what database tools you can use")
         print("  - list top customers")
         print("  - create a new customer, then show them")
         print("Type '/exit' to quit.\n")
