@@ -1,4 +1,4 @@
-# Local Chinook MCP Demo (Azure AI Foundry Agents)
+# Azure AI Foundry Agent for local MCP Server
 
 Two small scripts that show how to use a **local MCP server** (SQLite Chinook) from an **Azure AI Foundry Agent**:
 - `create_agent.py` — creates an agent (no secrets persisted).

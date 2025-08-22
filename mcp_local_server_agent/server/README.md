@@ -1,4 +1,4 @@
-# SQLite Chinook MCP Server (Streamable HTTP)
+# SQLite Local MCP Server (Streamable HTTP)
 
 A local **MCP server** that exposes **SQLite (Chinook)** data over **Streamable HTTP** at **`/mcp`**, designed to be:
 - **Inspectable** via the MCP Inspector (tools, resources, prompts)

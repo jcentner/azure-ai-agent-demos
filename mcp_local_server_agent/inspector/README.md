@@ -1,4 +1,4 @@
-# MCP Inspector — connect to your local & ngrok-exposed server
+# MCP Inspector
 
 This guide shows how to run the **MCP Inspector**, connect it to the sample MCP server you’ll run locally (Streamable HTTP at `/mcp`), and then verify tools/resources/prompts. You’ll also see how to point the Inspector at the **public ngrok URL** when you expose your server.
 
