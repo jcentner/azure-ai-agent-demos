@@ -31,7 +31,7 @@ cp .env.sample .env
 | Name | Required | Example | Notes |
 |---|:---:|---|---|
 | `PROJECT_ENDPOINT` | ✓ | `https://<proj>.<region>.models.ai.azure.com` | Your Azure AI Foundry project endpoint |
-| `MODEL_DEPLOYMENT_NAME` | ✓ | `gpt-4o-mini` | Model deployment to back the agent |
+| `MODEL_DEPLOYMENT_NAME` | ✓ | `gpt-4o` | Model deployment to back the agent |
 | `MCP_SERVER_URL` | ✓ (in Azure) | `https://<sub>.ngrok.app/mcp` | Must be publicly reachable; **include `/mcp`** |
 | `LOCAL_MCP_TOKEN` | — | `your-demo-token` | If your MCP server requires Bearer auth |
 | `AGENT_NAME` | — | `mcp_local_server_agent` | Display name for the created agent |

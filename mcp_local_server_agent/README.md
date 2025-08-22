@@ -68,23 +68,25 @@ See `docs/architecture.md` for a diagram and sequence details.
 
 - **Python 3.11+**
 - **Node.js 22+** (for `npx` MCP Inspector)
-- **ngrok** (free account ok)
-- Azure access: **PROJECT_ENDPOINT** + a **MODEL_DEPLOYMENT_NAME** in your Azure AI Foundry project
-- Note: **localhost URLs do not work from Azure** — use your **ngrok HTTPS URL** ending with `/mcp`.
+- **ngrok** (a free account is fine)
+- Azure access: **PROJECT_ENDPOINT** + a **MODEL_DEPLOYMENT_NAME** in your Azure AI Foundry project (basic environment is fine) 
+
+> Supported models: [Models supported by Azure AI Foundry Agent Service](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/concepts/model-region-support?tabs=global-standard)
 
 ---
 
 ## Quickstart
 
-> Each component has its own README with full step-by-step instructions. Start here, then dive deeper.
+> Each component has its own README with full step-by-step instructions.
 
-### A) Local learning loop (no Azure yet)
+### A) Local learning loop (no Azure)
 
 1) **Install**
+
 ~~~bash
+# (recommended) python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.sample .env
-# Fill in at least: PROJECT_ENDPOINT, MODEL_DEPLOYMENT_NAME (used later for agent)
 ~~~
 
 2) **Run the server**  
@@ -116,8 +118,10 @@ ngrok http 8787
 3) **Configure agent env**
 ~~~bash
 # in .env
+PROJECT_ENDPOINT=https://<proj>.<region>.models.ai.azure.com
+MODEL_DEPLOYMENT_NAME=<deployment-name>
 MCP_SERVER_URL=https://<sub>.ngrok.app/mcp
-LOCAL_MCP_TOKEN=your-demo-token    # if server requires Bearer auth (recommended)
+LOCAL_MCP_TOKEN=your-demo-token    # enables server auth (recommended; agent picks this up automatically)
 ~~~
 
 4) **Create the agent**  
@@ -131,7 +135,7 @@ python agent/create_agent.py
 ~~~bash
 python agent/ask_agent.py
 ~~~
-- Type: “list top customers”, “create a new customer…”, etc.
+- Type: “list top customers”, “create a new customer…”, and so on.
 - The console streams tokens and prints tool call steps (with verbose details).
 
 ---
@@ -139,18 +143,16 @@ python agent/ask_agent.py
 ## Configuration model
 
 - Use a **single repo-root `.env`** (copied from `.env.sample`).  
-  Both server and agent automatically load it via **python-dotenv** — no `source` needed.
-- Common variables (see component READMEs for full tables):
-  - `PROJECT_ENDPOINT`, `MODEL_DEPLOYMENT_NAME`, `MCP_SERVER_URL`, `LOCAL_MCP_TOKEN`, `PORT`, `MCP_PATH=/mcp`.
-- Changing `MCP_SERVER_URL` after agent creation? **Recreate the agent** (`create_agent.py`) — the MCP tool URL is **persisted** on the agent.
+  Both server and agent automatically load it via **python-dotenv**.
+- With a free ngrok account, the `MCP_SERVER_URL` will change on each run. If needed, **recreate the agent** (`create_agent.py`) — the MCP tool URL is persisted on the agent.
 
 ---
 
 ## Security notes
 
 - **Do not tunnel the Inspector;** tunnel only the server port (8787).
-- Set `LOCAL_MCP_TOKEN` if you expose the server; clients must send `Authorization: Bearer <token>`.
-- Agent scripts attach headers **at run time** (not persisted).
+- Set `LOCAL_MCP_TOKEN` if you expose the server; clients must then send `Authorization: Bearer <token>`.
+- Agent scripts attach auth headers **at run time** rather than persist them.
 
 ---
 
@@ -158,14 +160,10 @@ python agent/ask_agent.py
 
 | Symptom | Likely cause | Quick fix |
 |---|---|---|
-| Inspector CLI errors on `??`/`?.` | Old Node | Install Node **22+**, re-run Inspector |
-| Server logs `POST /` → **404** | Missing `/mcp` | Use `…/mcp` path (Inspector/Agent URL) |
-| `POST /mcp/` → **404** | Trailing slash mismatch | Use `…/mcp`; server also accepts `/mcp/` if you applied the redirect delta |
-| `Task group is not initialized` | Lifespan not wired to inner app | Ensure `Starlette(..., lifespan=inner.lifespan)` |
-| Agent 404 but Inspector OK | Agent’s persisted tool URL wrong | Set `MCP_SERVER_URL=…/mcp`, **recreate agent** |
+| Inspector CLI errors on `??`/`?.` | Old Node versopm | [Install Node **22+**](https://nodejs.org/en/download/) (recommend nvm), re-run Inspector |
+| Server logs `POST /` → **404** | Missing `/mcp` | Use `…/mcp` path in the Inspector/Agent URL |
+| Agent 404 but Inspector OK | Agent’s persisted tool URL may be wrong | Set `MCP_SERVER_URL=…/mcp`, **recreate agent** |
 | 401 Unauthorized | Missing token | Set `LOCAL_MCP_TOKEN` and client header |
-| “no such table: …” | Chinook variant name mismatch | Use updated `server/surface/tools.py` (auto-detects snake_case vs singular) |
-| Tool calls not visible in console | Minimal handler | Use enhanced logging in `agent/ask_agent.py` (prints tool name/args/output/error) |
 
 ---
 
@@ -173,11 +171,6 @@ python agent/ask_agent.py
 
 - Add a new MCP tool (e.g., parameterized report) or a read-only approval mode path.
 - Swap SQLite for another backend (Postgres, REST proxy) while keeping the MCP interface.
-- Hardening: TLS termination, IP allowlists, reserved ngrok domains, CI smoke tests across endpoints.
+- Hardening, observability, and other production requirements 
 
 ---
-
-## License & contributions
-
-- MIT (or your org’s standard)—add your license file at repo root.
-- PRs welcome: keep deltas focused, update READMEs alongside code, and preserve copy/paste-safe fences (outer quad, inner `~~~`).
