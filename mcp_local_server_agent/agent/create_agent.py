@@ -59,7 +59,7 @@ def main():
             # Non-interactive or user aborted; continue anyway (creates agent with invalid URL).
             pass
 
-    # Connect to the Azure AI Foundry project
+    # Connect to the Azure AI Foundry project (credential can also be a subscription key)
     project = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
 
     # Define the Chinook MCP tool "shape"

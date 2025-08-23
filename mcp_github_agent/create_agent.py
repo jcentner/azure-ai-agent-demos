@@ -27,7 +27,7 @@ def main():
     model = os.environ["MODEL_DEPLOYMENT_NAME"]
     agent_name = os.environ.get("AGENT_NAME", "mcp-github-readonly-demo")
 
-    # Connect to the Azure AI Foundry project
+    # Connect to the Azure AI Foundry project (credential can also be a subscription key)
     project = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
 
     # Define the GitHub MCP tool "shape" 
