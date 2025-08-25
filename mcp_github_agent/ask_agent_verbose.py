@@ -58,6 +58,7 @@ def _redact_map(d):
 class ConsoleEvents(AgentEventHandler):
     """Print run status, token deltas, and MCP tool-call details; supports a simple verbose mode."""
     def __init__(self, verbose: bool = False, stream_tokens: bool = True):
+		super().__init__()
         self.verbose = bool(verbose)
         self.stream_tokens = bool(stream_tokens)
         self._run_started_at = None
