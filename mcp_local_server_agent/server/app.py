@@ -58,11 +58,11 @@ def main():
     )
 
     logging.getLogger(__name__).info(
-        "Starting MCP server on http://0.0.0.0:%d/mcp", cfg.PORT
+        "Starting MCP server on http://127.0.0.1:%d/mcp", cfg.PORT
     )
     new_request_id()
     # Ensure lifespan runs on this app by giving it directly to Uvicorn.
-    uvicorn.run(app, host="0.0.0.0", port=cfg.PORT, lifespan="auto")
+    uvicorn.run(app, host="127.0.0.1", port=cfg.PORT, lifespan="auto")
 
 
 if __name__ == "__main__":
