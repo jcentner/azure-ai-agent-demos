@@ -173,15 +173,15 @@ def main():
     # Rebuild the MCP tool, but for inference, attach auth headers AT RUN TIME (not persisted)
     mcp = McpTool(server_label="chinook", server_url=server_url)
 
+    # Skip approval prompts for a smooth demo
+    mcp.set_approval_mode("never")
+
     token = os.getenv("LOCAL_MCP_TOKEN")
     if token:
         mcp.update_headers("Authorization", f"Bearer {token}")
         print("[auth] Using LOCAL_MCP_TOKEN for MCP Authorization header")
     else:
         print("[auth] No LOCAL_MCP_TOKEN set — MCP calls will fail if your server requires auth.")
-
-    # Skip approval prompts for a smooth demo
-    mcp.set_approval_mode("never")
 
     # Connect to the project and run a simple REPL
     project = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
