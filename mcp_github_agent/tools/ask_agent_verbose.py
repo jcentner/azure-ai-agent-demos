@@ -58,7 +58,7 @@ def _redact_map(d):
 class ConsoleEvents(AgentEventHandler):
     """Print run status, token deltas, and MCP tool-call details; supports a simple verbose mode."""
     def __init__(self, verbose: bool = False, stream_tokens: bool = True):
-		super().__init__()
+        super().__init__()
         self.verbose = bool(verbose)
         self.stream_tokens = bool(stream_tokens)
         self._run_started_at = None
@@ -102,24 +102,47 @@ class ConsoleEvents(AgentEventHandler):
             for i, tc in enumerate(getattr(details, "tool_calls", []) or [], 1):
                 tc_type = getattr(tc, "type", None)
                 print(f"  [tool_call {i}] type={tc_type}")
+                
+                # Debug: print all attributes of the tool call
+                if self.verbose:
+                    print(f"    [debug] tool_call attributes: {dir(tc)}")
+                    print(f"    [debug] tool_call dict: {tc.__dict__ if hasattr(tc, '__dict__') else 'no __dict__'}")
+                
+                # Try different ways to access MCP details
                 mcp = getattr(tc, "mcp_tool", None)
+                if not mcp and tc_type == "mcp":
+                    # Try accessing it directly if type is mcp
+                    mcp = tc
+                
                 if mcp:
                     self._tool_call_count += 1
                     server_label = getattr(mcp, 'server_label', None)
                     name = getattr(mcp, 'name', None)
                     print(f"    mcp.server_label={server_label} name={name}")
                     if self.verbose:
+                        # Debug: print all MCP attributes
+                        print(f"      [debug] mcp attributes: {dir(mcp)}")
+                        
                         # Show (truncated) args/result if available
                         try:
                             args = getattr(mcp, "arguments", None)
                             if isinstance(args, dict):
                                 args = _redact_map(args)
                             print(f"      args={_truncate(str(args), 800)}")
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            print(f"      [debug] args error: {e}")
+                        
                         try:
                             res = getattr(mcp, "result", None)
                             print(f"      result={_truncate(str(res), 800)}")
+                        except Exception as e:
+                            print(f"      [debug] result error: {e}")
+                        
+                        # Try output attribute
+                        try:
+                            output = getattr(mcp, "output", None)
+                            if output:
+                                print(f"      output={_truncate(str(output), 800)}")
                         except Exception:
                             pass
 
@@ -158,13 +181,18 @@ def main():
 
     # Rebuild the MCP tool, but for inference, attach auth headers AT RUN TIME (not persisted)
     mcp = McpTool(server_label="github", server_url="https://api.githubcopilot.com/mcp/")
+    mcp.set_approval_mode("never")  # skip approval prompts for a smooth demo
     token, src = pick_token()
     if token:
         mcp.update_headers("Authorization", f"Bearer {token}")
         print(f"[auth] Using {src}")
+        
+        # Debug: Let's see what headers are actually set
+        if args.verbose:
+            print(f"[debug] MCP headers after update: {mcp.headers if hasattr(mcp, 'headers') else 'no headers attr'}")
+            print(f"[debug] MCP resources: {mcp.resources if hasattr(mcp, 'resources') else 'no resources attr'}")
     else:
         print("[auth] No GITHUB_OAUTH_TOKEN or GITHUB_PAT set — GitHub MCP calls will fail.")
-    mcp.set_approval_mode("never")  # skip approval prompts for a smooth demo
 
     # Create a single thread for the chat session
     with project:

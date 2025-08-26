@@ -81,13 +81,13 @@ def main():
 
     # Rebuild the MCP tool, but for inference, attach auth headers AT RUN TIME (not persisted)
     mcp = McpTool(server_label="github", server_url="https://api.githubcopilot.com/mcp/")
+    mcp.set_approval_mode("never")  # skip approval prompts for a smooth demo
     token, src = pick_token()
     if token:
         mcp.update_headers("Authorization", f"Bearer {token}")
         print(f"[auth] Using {src}")
     else:
         print("[auth] No GITHUB_OAUTH_TOKEN or GITHUB_PAT set — GitHub MCP calls will fail.")
-    mcp.set_approval_mode("never")  # skip approval prompts for a smooth demo
 
     # Create a single thread for the chat session
     with project:
