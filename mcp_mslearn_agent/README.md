@@ -59,6 +59,6 @@ python ask_agent.py
 
 ## Docs
 
-- [Azure AI Agents: Create an agent with MCP](https://github.com/Azure/azure-sdk-for-python/tree/azure-ai-agents_1.2.0b3/sdk/ai/azure-ai-agents#create-agent-with-mcp)
+- [Azure AI Agents SDK: Create an agent with MCP](https://github.com/Azure/azure-sdk-for-python/tree/azure-ai-agents_1.2.0b3/sdk/ai/azure-ai-agents#create-agent-with-mcp)
 - [Connect to Model Context Protocol servers (preview)](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol)
 - [Code Samples: Hot to use the MCP tool (preview)](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol-samples?pivots=python)
