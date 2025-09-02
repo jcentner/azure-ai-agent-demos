@@ -62,9 +62,11 @@ def main():
     # Connect to the project
     project = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
 
-    # Rebuild the MCP tool (no headers needed)
+    # --- AUTH COMMENT ---
+    # To pass authentication headers at runtime, rebuild the MCP tool, update the headers, and then add the mcp.resources in the agent run
+    # We rebuild the tool and set approval mode to "never" for a smoother demo 
     mcp = McpTool(server_label="learn", server_url=LEARN_MCP_URL)
-    # If you later need headers or toggles, you would set them here:
+    mcp.set_approval_mode("never")
     # mcp.update_headers("X-Some-Header", "value")
 
     # Create a single thread for the chat session
@@ -94,7 +96,7 @@ def main():
                 thread_id=thread.id,
                 agent_id=agent_id,
                 event_handler=handler,
-                #tool_resources=mcp.resources,   # if you needed auth, you would add it here
+                tool_resources=mcp.resources,   # if you set auth headers above, it would be passed to the agent during the run with this line
             ) as stream:
                 handler.until_done()  # block until completion
 

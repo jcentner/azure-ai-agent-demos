@@ -4,7 +4,7 @@ This repository contains sample code and instructions for creating a variety of 
 
 ## Index of Demos
 
-- [/mcp_learn_agent](/mcp_learn_agent): Using an MCP tool to connect to the Microsoft Learn MCP server; absolute minimal demo. 
+- [/mcp_mslearn_agent](/mcp_mslearn_agent): Using an MCP tool to connect to the Microsoft Learn MCP server; absolute minimal demo. 
 - [/mcp_local_server_agent](/mcp_local_server_agent): A three step demo walking through setting up a local MCP server, inspecting it with the MCP inspector client, and connecting to it with an agent with auth at runtime. 
 - [/otel_observable_agent](/otel_observable_agent): Integration with OpenTelemetry and Azure App Insights for observability, as well as extreme verbosity in output for debugging. 
 
