@@ -31,29 +31,8 @@ The agent’s model decides *when* to call a tool; the MCP server implements *wh
   - `never` — The agent can call MCP tools without asking for approval (good for read-only).
   - `always` — Each tool call requires explicit approval (useful when tools can write/modify).
   - (Some SDKs allow per-tool maps; in these demos we use the global modes above.)
+  - These options can only be set **at run-time** by passing the MCP tool_resources when creating a run. 
   
-  In the scripts you can set this via the `.env` key `MCP_APPROVAL=never|always`.
-
-- **Read-only vs write**:  
-  The GitHub MCP server can be used read-only if your GitHub token (PAT) has read scopes only.  
-  Our examples assume read-only usage.
-  
----
-
-## Troubleshooting (quick fixes)
-
-- **“Unauthorized” / 401**  
-  Ensure `GITHUB_OAUTH_TOKEN` *or* `GITHUB_PAT` is exported in your shell or present in `.env`.
-
-- **Tool appears unused**  
-  The model may decide not to call a tool for vague prompts. Ask explicitly (e.g., “List the 5 most recent open issues in `<owner>/<repo>`”).
-
-- **Rate limiting / 403 or 429**  
-  Try a different repo or wait; consider using an OAuth token with appropriate quotas.
-
-- **Agent not found**  
-  Run `create_agent.py` again to make a fresh agent and refresh `./.agent_id`.
-
 ---
 
 ## Security tips
@@ -66,7 +45,9 @@ The agent’s model decides *when* to call a tool; the MCP server implements *wh
 
 ## Useful Documentation
 
-- [Azure AI Foundry - Model Context Protocol](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol)
-- [Azure AI Foundry - MCP Code Samples](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol-samples?pivots=python)
+- [Azure AI Agents SDK: Create an agent with MCP](https://github.com/Azure/azure-sdk-for-python/tree/azure-ai-agents_1.2.0b3/sdk/ai/azure-ai-agents#create-agent-with-mcp)
+- [Azure AI Agents SDK reference](https://learn.microsoft.com/en-us/python/api/overview/azure/ai-agents-readme?view=azure-python)
+- [Azure AI Foundry - Connect to Model Context Protocol servers (preview)](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol)
+- [Azure AI Foundry - Code Samples: Hot to use the MCP tool (preview)](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol-samples?pivots=python)
 - [MCP Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices)
 - [Understanding and mitigating security risks in MCP implementations - Microsoft Blog](https://techcommunity.microsoft.com/blog/microsoft-security-blog/understanding-and-mitigating-security-risks-in-mcp-implementations/4404667)
