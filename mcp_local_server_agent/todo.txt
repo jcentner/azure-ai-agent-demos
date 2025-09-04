@@ -1,0 +1,12 @@
+Structure demos with flows
+- fix repo map in this demo
+- add title of contents for readme
+- replace architecture section with visual architecture and code flow -> excalidraw, draw.io
+- see other notes for more: table of contents, demo flow, network flow, etc.
+
+Fix 404s
+- Add more logging to MCP server
+- debug
+
+Edit main readme
+- Add github enterprise auth demo shell

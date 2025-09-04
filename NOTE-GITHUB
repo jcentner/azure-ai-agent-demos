@@ -1,0 +1,3 @@
+Build demo with code interpreter that can build and test a simple web app ("don't come back until it works") and push to github incrementally with tests.
+
+Really this demonstrates end-to-end authentication at an enterprise level - set up oauth app and show how to ensure the agent only has the github permissions of the end-user.
