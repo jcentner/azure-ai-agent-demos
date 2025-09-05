@@ -19,10 +19,8 @@ mcp-local-inspector-ngrok-to-azure-agent/
 │  ├─ README.md
 │  ├─ db/
 │  ├─ surface/
-│  ├─ prompts/                 # (kept for reference; consolidated in surface/)
-│  ├─ resources/               # (kept for reference; consolidated in surface/)
 │  ├─ app.py, auth.py, config.py, errors.py, logging.py, requirements.txt
-│  └─ schema-diagram.png       # (optional helper image)
+│  └─ sqlite-sample-database-diagram-color.pdf    # schema diagram       
 ├─ inspector/                  # MCP Inspector usage
 │  └─ README.md
 ├─ agent/                      # Azure AI Foundry Agent demo
@@ -30,10 +28,6 @@ mcp-local-inspector-ngrok-to-azure-agent/
 │  ├─ create_agent.py
 │  ├─ ask_agent.py
 │  └─ requirements.txt
-└─ docs/
-   ├─ architecture.md          # flows & diagrams
-   ├─ protocol-cheatsheet.md   # MCP calls and tips
-   └─ images/                  # (optional: architecture.svg/png, sequence diagrams)
 ```
 
 ---
