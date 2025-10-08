@@ -63,3 +63,4 @@ python ask_agent.py
 - [Azure AI Agents SDK reference](https://learn.microsoft.com/en-us/python/api/overview/azure/ai-agents-readme?view=azure-python)
 - [Azure AI Foundry - Connect to Model Context Protocol servers (preview)](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol)
 - [Azure AI Foundry - Code Samples: Hot to use the MCP tool (preview)](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol-samples?pivots=python)
+- [Microsoft Learn MCP Server](https://learn.microsoft.com/en-us/training/support/mcp)
