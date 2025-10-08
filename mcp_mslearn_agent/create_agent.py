@@ -23,7 +23,7 @@ def main():
     # Required config
     endpoint = os.environ["PROJECT_ENDPOINT"]
     model = os.environ["MODEL_DEPLOYMENT_NAME"]
-    agent_name = os.environ.get("AGENT_NAME", "mcp-learn-readonly-demo")
+    agent_name = os.environ.get("AGENT_NAME", "mcp-mslearn-demo-agent")
 
     # Connect to the Azure AI Foundry project
     project = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())

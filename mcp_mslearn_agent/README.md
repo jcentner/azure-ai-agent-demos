@@ -40,7 +40,7 @@ python ask_agent.py
 ### Auth
 
 - No auth is required for the Microsoft Learn MCP server. 
-- Comments in `ask_agent.py` highliught where auth headers would be added in a way that does not persist auth tokens on the agent if they were required. 
+- Comments in `ask_agent.py` highlight where auth headers would be added in a way that does not persist auth tokens on the agent if they were required. 
 
 ### Notes
 
