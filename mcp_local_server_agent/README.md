@@ -102,6 +102,8 @@ npx @modelcontextprotocol/inspector@latest
 
 4) **Try tools** in the Inspector: `list_tables`, `top_customers`, `run_sql`, etc.
 
+5) **Cleanup:** Exit Inspector and Server
+   
 ---
 
 ### B) End-to-end (Azure Agent uses your local server via ngrok)
