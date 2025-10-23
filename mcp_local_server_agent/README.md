@@ -1,7 +1,7 @@
 # Local MCP Inspector → Local MCP Server → ngrok → Azure AI Agent
 
 This repo teaches you how to:
-1) run a **local MCP server** for a sample sqlite database,
+1) run a **local MCP server** that exposes tools to access a sample sqlite database (music artists and album sales),
 2) inspect it with the **MCP Inspector**,
 3) publish it via **ngrok** (HTTPS), and
 4) point an **Azure AI Foundry Agent** at that published MCP endpoint to use the tools.
