@@ -14,6 +14,7 @@ pip install -r requirements.txt
 cp .env.sample .env
 # Fill in PROJECT_ENDPOINT and MODEL_DEPLOYMENT_NAME
 ```
+> Note: Only public network access is supported with MCP tools at this time. Your Foundry resource will need to allow public network access. 
 
 ### 2) Create the agent
 
