@@ -106,21 +106,21 @@ npx @modelcontextprotocol/inspector@latest
 
 ### B) End-to-end (Azure Agent uses your local server via ngrok)
 
-1) **Run the server** (as above).
-
-2) **Expose with ngrok** (see the ngrok section in `server/README.md`):
-~~~bash
-ngrok http 8787
-# copy the HTTPS forwarding URL (e.g., https://<sub>.ngrok.app)
-~~~
-
-3) **Configure agent env**
+1) **Configure env for auth and agent**
 ~~~bash
 # in .env
 PROJECT_ENDPOINT=https://<proj>.<region>.models.ai.azure.com
 MODEL_DEPLOYMENT_NAME=<deployment-name>
 MCP_SERVER_URL=https://<sub>.ngrok.app/mcp
 LOCAL_MCP_TOKEN=your-demo-token    # enables server auth (recommended; agent picks this up automatically)
+~~~
+
+2) **Run the server** (as above).
+
+3) **Expose with ngrok** (see the ngrok section in `server/README.md`):
+~~~bash
+ngrok http 8787
+# copy the HTTPS forwarding URL (e.g., https://<sub>.ngrok.app)
 ~~~
 
 4) **Create the agent**  
