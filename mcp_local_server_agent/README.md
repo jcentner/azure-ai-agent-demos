@@ -130,6 +130,8 @@ MODEL_DEPLOYMENT_NAME=<deployment-name>
 MCP_SERVER_URL=https://<sub>.ngrok.app/mcp
 ~~~
 
+> Note: **Ensure the MCP_SERVER_URL has the /mcp path** in the .env configuration
+
 4) **Create the agent**  
 See `agent/README.md` for details.
 ~~~bash
