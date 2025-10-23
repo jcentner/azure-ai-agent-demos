@@ -92,6 +92,11 @@ python -m server.app
 
 3) **Use the Inspector**  
 See `inspector/README.md` to install Node+`npx` and connect:
+
+~~~bash
+npx @modelcontextprotocol/inspector@latest
+~~~
+
 - Transport: **Streamable HTTP**
 - URL: `http://localhost:8787/mcp`
 
