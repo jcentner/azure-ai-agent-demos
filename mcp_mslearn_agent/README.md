@@ -9,6 +9,7 @@ Two small scripts that show how to use the **Microsoft Learn MCP tool** from an 
 ### 1) 
 
 ```bash
+# (recommended) python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.sample .env
 # Fill in PROJECT_ENDPOINT and MODEL_DEPLOYMENT_NAME
