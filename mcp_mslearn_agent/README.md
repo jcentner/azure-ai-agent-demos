@@ -39,6 +39,15 @@ python ask_agent.py
   - basic run/step events,
   - basic MCP tool call details (server label + tool name).
 
+### 4) Cleanup
+
+Exit the interactive loop: /exit
+
+```bash
+# Deactivate virtual environment
+deactivate
+```
+
 ### Auth
 
 - No auth is required for the Microsoft Learn MCP server. 
