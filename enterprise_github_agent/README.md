@@ -154,7 +154,7 @@ See [GitHub MCP Server docs](https://github.com/github/github-mcp-server) for fu
 ┌─────────────────────────────────────────────────────────────┐
 │                    Runtime Only                              │
 │  ┌─────────────┐                                            │
-│  │ GITHUB_PAT  │──► MCP Headers ──► GitHub API              │
+│  │ GITHUB_PAT  │──► McpToolResource ──► GitHub API          │
 │  └─────────────┘    (per-request)                           │
 │        │                                                     │
 │        └── NOT stored on agent definition                   │
@@ -162,7 +162,7 @@ See [GitHub MCP Server docs](https://github.com/github/github-mcp-server) for fu
 └─────────────────────────────────────────────────────────────┘
 ```
 
-- **PAT is injected at runtime** via `McpTool.update_headers()` and `tool_resources`
+- **PAT is injected at runtime** via `McpToolResource(server_label, headers)` in `tool_resources`
 - **Agent only has permissions** that the PAT grants
 - **Revoke access** by regenerating or deleting the PAT
 
@@ -174,7 +174,7 @@ See [GitHub MCP Server docs](https://github.com/github/github-mcp-server) for fu
 | "401 Unauthorized" from GitHub | Check GITHUB_PAT is valid and has `repo` scope |
 | "Tool call not executing" | Verify MCP server URL is reachable (requires public network) |
 | "Rate limit exceeded" | Wait or use a different PAT; check Azure model quotas |
-| No streaming output | Ensure `azure-ai-agents>=1.2.0b2` is installed |
+| No streaming output | Ensure `azure-ai-projects --pre` is installed (v2.0.0b2+) |
 
 ## Extending the Demo
 

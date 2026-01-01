@@ -9,7 +9,7 @@ Uses the new Foundry SDK (azure-ai-projects --pre) with:
 - Streaming output with visible tool calls
 
 Auth behavior:
-- GitHub PAT is passed at runtime via MCP headers - NOT persisted on the agent
+- GitHub PAT is passed at runtime via tool_resources - NOT persisted on the agent
 - Requires GITHUB_PAT environment variable
 """
 
@@ -20,6 +20,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
+from azure.ai.projects.models import McpToolResource
 
 # GitHub MCP server (official remote server)
 GITHUB_MCP_URL = "https://api.githubcopilot.com/mcp/"
@@ -106,7 +107,7 @@ def main():
     with project:
         openai_client = project.get_openai_client()
 
-        # Create a conversation for multi-turn chat
+        # Create a conversation for multi-turn chat (initially empty)
         conversation = openai_client.conversations.create()
         print(f"[conversation] id={conversation.id}\n")
 
@@ -123,31 +124,34 @@ def main():
                 print("Goodbye.")
                 break
 
+            # Add user message to conversation
+            openai_client.conversations.items.create(
+                conversation_id=conversation.id,
+                items=[{"type": "message", "role": "user", "content": user_input}],
+            )
+
             # Create response using the agent with conversation context
-            # GitHub PAT is injected via extra headers for MCP authentication
+            # GitHub PAT is injected via tool_resources for MCP authentication
             try:
                 print("[thinking...]")
 
+                # Build tool_resources with GitHub PAT for MCP auth
+                tool_resources = McpToolResource(
+                    server_label="github",
+                    headers={"Authorization": f"Bearer {github_pat}"},
+                )
+
                 # Use streaming for real-time output
                 stream = openai_client.responses.create(
-                    input=user_input,
+                    input="",  # Empty input since message is in conversation
                     conversation=conversation.id,
                     extra_body={
                         "agent": {
                             "name": agent_name,
                             "type": "agent_reference",
                         },
-                        # Inject GitHub PAT for MCP tool authentication
-                        "tool_config": {
-                            "mcp": {
-                                "github": {
-                                    "headers": {
-                                        "Authorization": f"Bearer {github_pat}",
-                                    },
-                                },
-                            },
-                        },
                     },
+                    tool_resources=[tool_resources],
                     stream=True,
                 )
 

@@ -18,8 +18,8 @@ from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import (
     PromptAgentDefinition,
-    McpToolDefinition,
-    CodeInterpreterToolDefinition,
+    MCPTool,
+    CodeInterpreterTool,
 )
 
 # GitHub MCP server (official remote server - default toolset)
@@ -55,13 +55,14 @@ When helping with development tasks:
 You work with the user's GitHub repositories using their personal access token for authentication."""
 
     # Define tools for the agent
-    # Note: GitHub PAT is injected at runtime in ask_agent.py, not stored here
+    # Note: GitHub PAT is injected at runtime in ask_agent.py via tool_resources
     tools = [
-        McpToolDefinition(
+        MCPTool(
             server_label="github",
             server_url=GITHUB_MCP_URL,
+            require_approval="never",  # Auto-approve for smoother demo
         ),
-        CodeInterpreterToolDefinition(),
+        CodeInterpreterTool(),
     ]
 
     # Create agent using new Foundry SDK pattern
