@@ -1,0 +1,5 @@
+# Azure AI Foundry SDK (preview) - new Foundry API
+azure-ai-projects --pre
+azure-identity
+python-dotenv
+openai
