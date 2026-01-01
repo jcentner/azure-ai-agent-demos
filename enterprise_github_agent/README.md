@@ -19,8 +19,9 @@ An Azure AI Foundry Agent with **GitHub MCP integration** and **Code Interpreter
 
 - **GitHub MCP Server** (official): Create issues, push files, open PRs, list repos
 - **Code Interpreter**: Write and test Python code before pushing
-- **Streaming output**: See tokens and tool calls in real-time
-- **PAT authentication**: User-scoped access via Personal Access Token (not persisted on agent)
+- **Streaming output**: Real-time text streaming with visible tool calls (🔧 MCP, 🐍 Code Interpreter)
+- **MCP approval flow**: Tool calls require approval with runtime PAT injection
+- **PAT authentication**: User-scoped access via Personal Access Token (never persisted on agent)
 
 ## Repository Map
 
@@ -93,35 +94,46 @@ python ask_agent.py
 ```
 > Create an issue in myuser/test-repo titled "Add greeting function" with description "Add a Python function that returns a greeting message"
 
-[step] type=tool_calls status=completed
-  [tool_call 1] type=mcp_tool
-    mcp.server_label=github name=create_issue
+[assistant]
+  🔧 [mcp_call] server=github tool=create_issue
+  ⏳ [mcp_approval] server=github tool=create_issue
+  ✅ [approving 1 MCP tool call(s)...]
+  ✓ [mcp_call] completed
 
-Created issue #42 in myuser/test-repo: "Add greeting function"
+I've created issue #42 in myuser/test-repo titled "Add greeting function" with your description.
 
 > Now write a Python greeting function, test it with Code Interpreter, then push it to the repo
 
-[step] type=tool_calls status=completed
-  [tool_call 1] type=code_interpreter
-    code_interpreter.input: def greet(name: str) -> str:
-        return f"Hello, {name}!"...
+[assistant]
+I'll write a greeting function, test it, and then push it to the repository.
 
-Code executed successfully. Testing:
-  greet("World") → "Hello, World!" ✓
+  🐍 [code_interpreter] executing...
+def greet(name: str) -> str:
+    return f"Hello, {name}!"
 
-[step] type=tool_calls status=completed
-  [tool_call 2] type=mcp_tool
-    mcp.server_label=github name=create_or_update_file
+# Test the function
+print(greet("World"))
+  ✓ [code_interpreter] completed
 
-Pushed greet.py to myuser/test-repo on branch 'feature/greeting'
+The function works correctly - it outputs "Hello, World!" ✓
+
+Now I'll push this to the repository:
+  🔧 [mcp_call] server=github tool=create_or_update_file
+  ⏳ [mcp_approval] server=github tool=create_or_update_file
+  ✅ [approving 1 MCP tool call(s)...]
+  ✓ [mcp_call] completed
+
+Done! I've pushed `greet.py` to myuser/test-repo on branch 'feature/greeting'.
 
 > Open a PR to merge this into main, referencing issue #42
 
-[step] type=tool_calls status=completed
-  [tool_call 1] type=mcp_tool
-    mcp.server_label=github name=create_pull_request
+[assistant]
+  🔧 [mcp_call] server=github tool=create_pull_request
+  ⏳ [mcp_approval] server=github tool=create_pull_request
+  ✅ [approving 1 MCP tool call(s)...]
+  ✓ [mcp_call] completed
 
-Created PR #43: "Add greeting function (Fixes #42)"
+Created PR #43: "Add greeting function (Fixes #42)" - ready for review!
 ```
 
 ## Configuration
@@ -152,17 +164,19 @@ See [GitHub MCP Server docs](https://github.com/github/github-mcp-server) for fu
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Runtime Only                              │
+│                    Runtime Only (Per-Request)               │
 │  ┌─────────────┐                                            │
-│  │ GITHUB_PAT  │──► McpToolResource ──► GitHub API          │
-│  └─────────────┘    (per-request)                           │
+│  │ GITHUB_PAT  │──► MCP Approval Response ──► GitHub API    │
+│  └─────────────┘    (headers injected)                      │
 │        │                                                     │
 │        └── NOT stored on agent definition                   │
 │            NOT visible in Azure AI Foundry portal           │
+│            Injected only when approving MCP tool calls      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-- **PAT is injected at runtime** via `McpToolResource(server_label, headers)` in `tool_resources`
+- **PAT is injected at runtime** via `headers` in MCP approval responses
+- **Tool calls require approval** (`require_approval="always"` on agent)
 - **Agent only has permissions** that the PAT grants
 - **Revoke access** by regenerating or deleting the PAT
 
@@ -172,24 +186,15 @@ See [GitHub MCP Server docs](https://github.com/github/github-mcp-server) for fu
 |-------|----------|
 | "Agent not found" | Run `create_agent.py` again |
 | "401 Unauthorized" from GitHub | Check GITHUB_PAT is valid and has `repo` scope |
-| "Tool call not executing" | Verify MCP server URL is reachable (requires public network) |
+| "mcp_approval_request" not handled | Ensure `require_approval="always"` is set on the MCPTool |
 | "Rate limit exceeded" | Wait or use a different PAT; check Azure model quotas |
-| No streaming output | Ensure `azure-ai-projects --pre` is installed (v2.0.0b2+) |
-
-## Extending the Demo
-
-### Add more GitHub toolsets
-
-By default, this demo uses the `default` toolset. To enable additional tools (e.g., `actions`, `discussions`):
-
-```python
-# In ask_agent.py, modify the MCP URL to include toolsets:
-GITHUB_MCP_URL = "https://api.githubcopilot.com/mcp/?toolsets=default,actions"
-```
+| Import errors | Ensure `azure-ai-projects>=2.0.0b2` is installed |
 
 ## Related Docs
 
+- [Azure AI Projects SDK (PyPI)](https://pypi.org/project/azure-ai-projects/)
+- [Azure AI Projects SDK Samples](https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/ai/azure-ai-projects/samples)
+- [MCP Tool Sample](https://github.com/Azure/azure-sdk-for-python/blob/azure-ai-projects_2.0.0b2/sdk/ai/azure-ai-projects/samples/agents/tools/sample_agent_mcp.py)
 - [Azure AI Foundry Quickstart](https://learn.microsoft.com/en-us/azure/ai-foundry/quickstarts/get-started-code)
-- [Azure AI Agents MCP Integration](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol)
 - [GitHub MCP Server](https://github.com/github/github-mcp-server)
 - [Code Interpreter Tool](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/code-interpreter)

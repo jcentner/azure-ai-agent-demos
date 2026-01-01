@@ -55,12 +55,12 @@ When helping with development tasks:
 You work with the user's GitHub repositories using their personal access token for authentication."""
 
     # Define tools for the agent
-    # Note: GitHub PAT is injected at runtime in ask_agent.py via tool_resources
+    # Note: GitHub PAT is injected at runtime via MCP tool headers
     tools = [
         MCPTool(
             server_label="github",
             server_url=GITHUB_MCP_URL,
-            require_approval="never",  # Auto-approve for smoother demo
+            require_approval="always",  # Require approval for each MCP tool call
         ),
         CodeInterpreterTool(),
     ]
