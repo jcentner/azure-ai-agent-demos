@@ -83,7 +83,7 @@ See [ADR-003](../architecture/decisions/003-v2-sdk-and-openai-responses-api.md) 
 | V1 MS Learn agent (`archive/v1/mcp_mslearn_agent/`) | Complete, working code | Yes |
 | V1 Local server agent (`archive/v1/mcp_local_server_agent/`) | Complete, working code — full MCP server + agent | Yes |
 | V2 Enterprise GitHub agent (`enterprise_github_agent/`) | Validated against GA SDK, fixed auth and API patterns | Compiles, not live-tested |
-| V2 MS Learn agent (`mcp_mslearn_agent/`) | Stub README only | Yes |
+| V2 MS Learn agent (`mcp_mslearn_agent/`) | Complete v2 demo: public MCP server, auto-approved, 41 tests | Compiles, not live-tested |
 | V2 Local server agent (`mcp_local_server_agent/`) | Stub README only | Yes |
 | Documentation skeleton | Empty templates in `docs/` | Yes |
 | Enterprise agent plan (`.github/prompts/plan-enterpriseGitHubAgent.prompt.md`) | Detailed plan, partially diverges from actual code | Yes |
