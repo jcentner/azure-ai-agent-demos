@@ -1,5 +1,7 @@
 # Enterprise GitHub Agent (Azure AI Foundry + MCP)
 
+> 🚧 **Rewrite in progress** — This demo needs a **full rewrite from scratch** for Azure AI Foundry Agents v2 and the new Foundry portal UI. Existing prototype code is outdated and should not be used as-is.
+
 An Azure AI Foundry Agent with **GitHub MCP integration** and **Code Interpreter**, demonstrating a complete developer workflow: create issues, write code, and open pull requests—all through natural language.
 
 ```

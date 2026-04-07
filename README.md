@@ -10,7 +10,7 @@ Sample code and walkthroughs for building Azure AI Foundry Agents. Demos cover t
 |------|--------|-------------|
 | [mcp_mslearn_agent](mcp_mslearn_agent/) | 🚧 Rewrite in progress | Minimal MCP tool demo with the Microsoft Learn MCP server |
 | [mcp_local_server_agent](mcp_local_server_agent/) | 🚧 Rewrite in progress | Local MCP server → Inspector → agent connection with auth |
-| [enterprise_github_agent](enterprise_github_agent/) | 📋 Planned | GitHub MCP server with OAuth2, Code Interpreter, and agent loop |
+| [enterprise_github_agent](enterprise_github_agent/) | � Rewrite in progress | GitHub MCP server with Code Interpreter, and agent loop |
 
 ## Archived Demos (v1)
 

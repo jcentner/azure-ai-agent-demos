@@ -138,6 +138,10 @@ celerybeat.pid
 .env
 .envrc
 .venv
+
+# Agent demo artifacts
+.agent_name
+.agent_id
 env/
 venv/
 ENV/
