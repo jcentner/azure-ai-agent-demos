@@ -142,6 +142,7 @@ celerybeat.pid
 # Agent demo artifacts
 .agent_name
 .agent_id
+**/db/working/
 env/
 venv/
 ENV/
