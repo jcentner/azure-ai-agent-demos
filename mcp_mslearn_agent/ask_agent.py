@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """
-ask_agent.py — Interactive chat with the Enterprise GitHub Agent.
+ask_agent.py — Interactive chat with the Microsoft Learn MCP Agent.
 
 Uses the GA Foundry SDK (azure-ai-projects>=2.0.0) with:
 - OpenAI Responses API for conversation
-- GitHub MCP tool with project connection auth (PAT stored in Foundry connection)
-- Code Interpreter for code execution
+- Microsoft Learn MCP tool (public, no auth, auto-approved)
 - Streaming output with visible tool calls
 
 Auth behavior:
-- GitHub PAT is stored in a Foundry project connection, not on the agent definition
-- MCP tool calls require approval (auto-approved for demo)
+- No auth is required for the Microsoft Learn MCP server
+- MCP tool calls are auto-approved (require_approval="never" set at creation)
 """
 
 import os
@@ -21,71 +20,36 @@ from typing import Any
 from dotenv import load_dotenv
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
-from openai.types.responses.response_input_param import McpApprovalResponse
-
-
-def get_mcp_approval_requests(response) -> list[McpApprovalResponse]:
-    """Extract MCP approval requests from response output and build approval responses."""
-    approvals: list[McpApprovalResponse] = []
-    if hasattr(response, "output") and response.output:
-        for item in response.output:
-            if getattr(item, "type", None) == "mcp_approval_request":
-                server_label = getattr(item, "server_label", "?")
-                tool_name = getattr(item, "name", "?")
-                item_id = getattr(item, "id", None)
-                if item_id:
-                    print(f"\n  ⏳ [mcp_approval] server={server_label} tool={tool_name}")
-                    approvals.append(
-                        McpApprovalResponse(
-                            type="mcp_approval_response",
-                            approve=True,
-                            approval_request_id=item_id,
-                        )
-                    )
-    return approvals
 
 
 def stream_response(openai_client, request_kwargs: dict) -> Any:
     """Stream a response and print events in real-time. Returns the completed response."""
     stream = openai_client.responses.create(**request_kwargs, stream=True)
-    
+
     full_response = None
-    
+
     for event in stream:
         event_type = getattr(event, "type", None)
-        
+
         # Text streaming
         if event_type == "response.output_text.delta":
             delta = getattr(event, "delta", "")
             print(delta, end="", flush=True)
-        
+
         # MCP tool call started
         elif event_type == "response.mcp_call.started":
             server = getattr(event, "server_label", "?")
             name = getattr(event, "name", "?")
             print(f"\n  🔧 [mcp_call] server={server} tool={name}", flush=True)
-        
+
         # MCP tool call completed
         elif event_type == "response.mcp_call.completed":
             print("  ✓ [mcp_call] completed", flush=True)
-        
-        # Code Interpreter started
-        elif event_type == "response.code_interpreter_call.started":
-            print(f"\n  🐍 [code_interpreter] executing...", flush=True)
-        
-        # Code Interpreter code delta (show code being written)
-        elif event_type == "response.code_interpreter_call.code.delta":
-            code_delta = getattr(event, "delta", "")
-            print(code_delta, end="", flush=True)
-        
-        # Code Interpreter completed
-        elif event_type == "response.code_interpreter_call.completed":
-            print("\n  ✓ [code_interpreter] completed", flush=True)
-        
+
         # Response completed - capture the full response
         elif event_type == "response.completed":
             full_response = getattr(event, "response", None)
-    
+
     return full_response
 
 
@@ -105,9 +69,6 @@ def main():
             print("ERROR: No agent name found. Run 'python create_agent.py' first.")
             sys.exit(1)
 
-    # Optional: target repo for context
-    target_repo = os.environ.get("GITHUB_REPO", "")
-
     # Connect to the project
     project = AIProjectClient(
         endpoint=endpoint,
@@ -116,26 +77,20 @@ def main():
 
     # Print startup info
     print("=" * 60)
-    print("Enterprise GitHub Agent (New Foundry Experience)")
+    print("Microsoft Learn MCP Agent (New Foundry Experience)")
     print("=" * 60)
     print(f"Agent: {agent_name}")
-    if target_repo:
-        print(f"Target repo: {target_repo}")
     print("\nTools available:")
-    print("  - GitHub MCP (repos, issues, pull_requests, users, context)")
-    print("  - Code Interpreter (Python execution)")
-    print("\nMCP tool calls require approval (auto-approved for demo)")
+    print("  - Microsoft Learn MCP (search and retrieve documentation)")
+    print("\nMCP tool calls are auto-approved (read-only operations)")
     print("Commands: /exit to quit")
     print("=" * 60)
 
     # Suggest demo prompts
     print("\nTry these prompts:")
-    if target_repo:
-        print(f'  "Create an issue in {target_repo} for adding a hello world function"')
-        print(f'  "Write a Python hello world function, then push it to {target_repo}"')
-    else:
-        print('  "List my GitHub repositories"')
-        print('  "Create an issue in <owner>/<repo> for adding a greeting function"')
+    print('  "Find docs on Azure Functions triggers and bindings"')
+    print('  "What is Azure Cosmos DB indexing? Include links."')
+    print('  "Search Microsoft Learn for Azure App Service deployment options"')
     print()
 
     # Get OpenAI client from project
@@ -174,34 +129,14 @@ def main():
                 if previous_response_id:
                     request_kwargs["previous_response_id"] = previous_response_id
 
-                # Stream initial response (may require MCP approval)
+                # Stream the response
                 print("\n[assistant]")
                 response = stream_response(openai_client, request_kwargs)
-
-                # Handle MCP approval requests in a loop
-                while response:
-                    approvals = get_mcp_approval_requests(response)
-                    if not approvals:
-                        break
-
-                    print(f"  ✅ [approving {len(approvals)} MCP tool call(s)...]")
-                    # Send approval and stream continuation
-                    approval_kwargs = {
-                        "input": approvals,
-                        "previous_response_id": response.id,
-                        "extra_body": {
-                            "agent_reference": {
-                                "name": agent_name,
-                                "type": "agent_reference",
-                            },
-                        },
-                    }
-                    response = stream_response(openai_client, approval_kwargs)
 
                 # Save for conversation continuity
                 if response:
                     previous_response_id = response.id
-                
+
                 print("\n")  # Clean newline after response
 
             except Exception as e:

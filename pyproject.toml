@@ -1,0 +1,3 @@
+[tool.pytest.ini_options]
+# importlib mode allows same-named test files in different demo directories
+addopts = "--import-mode=importlib"
