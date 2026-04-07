@@ -1,19 +1,31 @@
 # Azure AI Foundry Agents Demos
 
-This repository contains sample code and instructions for creating a variety of simple Azure AI Foundry Agents. Demos include those for using tools like Grounding with Bing Search, MCP servers, and OpenAPI schemas. Also included are walkthroughs for enterprise features like observability, secure networking, and more.
+Sample code and walkthroughs for building Azure AI Foundry Agents. Demos cover tools like MCP servers, Grounding with Bing Search, OpenAPI schemas, and enterprise features like observability and secure networking.
 
-## Completed Demos
+> **Note:** These demos are being rewritten for **Azure AI Foundry Agents v2** and the **new Foundry portal UI**. The original v1 demos are archived below for reference.
 
-- [/mcp_mslearn_agent](/mcp_mslearn_agent): Using an MCP tool to connect to the Microsoft Learn MCP server; absolute minimal demo.
-- [/mcp_local_server_agent](/mcp_local_server_agent): A three step demo walking through setting up a local MCP server, inspecting it with the MCP inspector client, and connecting to it with an agent with auth at runtime.
+## Demos (v2 — Agents v2 + New Foundry UI)
 
-## Demos in progress
+| Demo | Status | Description |
+|------|--------|-------------|
+| [mcp_mslearn_agent](mcp_mslearn_agent/) | 🚧 Rewrite in progress | Minimal MCP tool demo with the Microsoft Learn MCP server |
+| [mcp_local_server_agent](mcp_local_server_agent/) | 🚧 Rewrite in progress | Local MCP server → Inspector → agent connection with auth |
+| [enterprise_github_agent](enterprise_github_agent/) | 📋 Planned | GitHub MCP server with OAuth2, Code Interpreter, and agent loop |
 
-- [x] Minimal MCP tool demo with the Microsoft Learn MCP server
-- [x] Local MCP server, inspector, and agent connection with auth
-- [ ] Enterprise auth and coding agent demo (GitHub MCP server, OAuth2, Code Interpreter and agent loop to build simple web-app). An agent with a coding environment (Code Interpreter) and a GitHub MCP tool with OAuth2, inheriting user permissions to repositories.
-- [ ] Observability demo (App Insights, per-delta verbose output). Integration with OpenTelemetry and Azure App Insights for observability.
-- [ ] Copilot studio integration with agent (Teams bot to add RBAC roles for users, grounded with policy (Fabric?), logged, permission approval) 
+## Archived Demos (v1)
+
+The original demos from the walkthrough video are preserved in [`archive/v1/`](archive/v1/). They target the original Agents API and legacy Foundry portal UI.
+
+- [v1 MCP Microsoft Learn Agent](archive/v1/mcp_mslearn_agent/)
+- [v1 MCP Local Server Agent](archive/v1/mcp_local_server_agent/)
+
+## Roadmap
+
+- [ ] MCP Microsoft Learn agent (v2 rewrite)
+- [ ] MCP local server agent (v2 rewrite)
+- [ ] Enterprise GitHub agent (OAuth2, Code Interpreter, agent loop)
+- [ ] Observability demo (App Insights, OpenTelemetry)
+- [ ] Copilot Studio integration (Teams bot, RBAC, policy grounding)
 
 <p align="center">
   <img src="assets/agent-avatar.png" alt="Azure AI Agent avatar" width="360">

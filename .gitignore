@@ -205,3 +205,19 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Copier autonomous-dev template (local-only workflow scaffolding)
+AGENTS.md
+.copier-answers.yml
+docs/
+roadmap/
+.github/agents/
+.github/hooks/
+.github/instructions/
+.github/copilot-instructions.md
+.github/prompts/phase-plan.prompt.md
+.github/prompts/implement.prompt.md
+.github/prompts/implementation-plan.prompt.md
+.github/prompts/phase-complete.prompt.md
+.github/prompts/code-review.prompt.md
+.github/prompts/PROMPT-GUIDE.md
