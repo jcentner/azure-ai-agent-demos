@@ -2,16 +2,15 @@
 """
 ask_agent.py — Interactive chat with the Enterprise GitHub Agent.
 
-Uses the new Foundry SDK (azure-ai-projects --pre) with:
+Uses the GA Foundry SDK (azure-ai-projects>=2.0.0) with:
 - OpenAI Responses API for conversation
-- GitHub MCP tool with PAT authentication (injected via approval headers)
+- GitHub MCP tool with project connection auth (PAT stored in Foundry connection)
 - Code Interpreter for code execution
 - Streaming output with visible tool calls
 
 Auth behavior:
-- GitHub PAT is injected at runtime via MCP approval response headers
-- PAT is NOT persisted on the agent definition
-- Requires GITHUB_PAT environment variable
+- GitHub PAT is stored in a Foundry project connection, not on the agent definition
+- MCP tool calls require approval (auto-approved for demo)
 """
 
 import os
@@ -22,11 +21,12 @@ from typing import Any
 from dotenv import load_dotenv
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
+from openai.types.responses.response_input_param import McpApprovalResponse
 
 
-def get_mcp_approval_requests(response, github_pat: str) -> list[dict[str, Any]]:
-    """Extract MCP approval requests from response output and build approval responses with auth headers."""
-    approvals: list[dict[str, Any]] = []
+def get_mcp_approval_requests(response) -> list[McpApprovalResponse]:
+    """Extract MCP approval requests from response output and build approval responses."""
+    approvals: list[McpApprovalResponse] = []
     if hasattr(response, "output") and response.output:
         for item in response.output:
             if getattr(item, "type", None) == "mcp_approval_request":
@@ -35,17 +35,13 @@ def get_mcp_approval_requests(response, github_pat: str) -> list[dict[str, Any]]
                 item_id = getattr(item, "id", None)
                 if item_id:
                     print(f"\n  ⏳ [mcp_approval] server={server_label} tool={tool_name}")
-                    # Build approval with GitHub PAT in headers for authentication
-                    # This injects the PAT at runtime - never stored on the agent
-                    approval: dict = {
-                        "type": "mcp_approval_response",
-                        "approve": True,
-                        "approval_request_id": item_id,
-                    }
-                    # Add auth headers for GitHub MCP server
-                    if server_label == "github":
-                        approval["headers"] = {"Authorization": f"Bearer {github_pat}"}
-                    approvals.append(approval)
+                    approvals.append(
+                        McpApprovalResponse(
+                            type="mcp_approval_response",
+                            approve=True,
+                            approval_request_id=item_id,
+                        )
+                    )
     return approvals
 
 
@@ -101,13 +97,6 @@ def main():
 
     # Required config
     endpoint = os.environ["PROJECT_ENDPOINT"]
-    github_pat = os.environ.get("GITHUB_PAT")
-
-    if not github_pat:
-        print("ERROR: GITHUB_PAT environment variable is required.")
-        print("Create a GitHub Personal Access Token with 'repo' scope at:")
-        print("  https://github.com/settings/tokens")
-        sys.exit(1)
 
     # Get agent name from file or environment
     agent_name = os.getenv("AGENT_NAME")
@@ -179,7 +168,7 @@ def main():
                 request_kwargs = {
                     "input": user_input,
                     "extra_body": {
-                        "agent": {
+                        "agent_reference": {
                             "name": agent_name,
                             "type": "agent_reference",
                         },
@@ -194,7 +183,7 @@ def main():
 
                 # Handle MCP approval requests in a loop
                 while response:
-                    approvals = get_mcp_approval_requests(response, github_pat)
+                    approvals = get_mcp_approval_requests(response)
                     if not approvals:
                         break
 
@@ -204,7 +193,7 @@ def main():
                         "input": approvals,
                         "previous_response_id": response.id,
                         "extra_body": {
-                            "agent": {
+                            "agent_reference": {
                                 "name": agent_name,
                                 "type": "agent_reference",
                             },

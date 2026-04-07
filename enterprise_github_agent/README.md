@@ -1,13 +1,11 @@
 # Enterprise GitHub Agent (Azure AI Foundry + MCP)
 
-> 🚧 **Rewrite in progress** — This demo needs a **full rewrite from scratch** for Azure AI Foundry Agents v2 and the new Foundry portal UI. Existing prototype code is outdated and should not be used as-is.
-
 An Azure AI Foundry Agent with **GitHub MCP integration** and **Code Interpreter**, demonstrating a complete developer workflow: create issues, write code, and open pull requests—all through natural language.
 
 ```
 ┌─────────────────┐      ┌──────────────────────┐      ┌─────────────────┐
 │   User (CLI)    │◄────►│  Azure AI Foundry    │◄────►│  GitHub MCP     │
-│                 │      │  Agent (GPT-5.2)     │      │  (Official)     │
+│                 │      │  Agent               │      │  (Official)     │
 └─────────────────┘      │                      │      └────────┬────────┘
                          │  + Code Interpreter  │               │
                          └──────────────────────┘               ▼
@@ -22,8 +20,8 @@ An Azure AI Foundry Agent with **GitHub MCP integration** and **Code Interpreter
 - **GitHub MCP Server** (official): Create issues, push files, open PRs, list repos
 - **Code Interpreter**: Write and test Python code before pushing
 - **Streaming output**: Real-time text streaming with visible tool calls (🔧 MCP, 🐍 Code Interpreter)
-- **MCP approval flow**: Tool calls require approval with runtime PAT injection
-- **PAT authentication**: User-scoped access via Personal Access Token (never persisted on agent)
+- **MCP approval flow**: Tool calls require approval (auto-approved for demo)
+- **Project connection auth**: GitHub PAT stored in a Foundry project connection (not on the agent)
 
 ## Repository Map
 
@@ -41,9 +39,10 @@ enterprise_github_agent/
 1. **Python 3.11+**
 2. **Azure CLI** - logged in (`az login`)
 3. **Azure AI Foundry project** with:
-   - GPT-5.2 (or compatible model) deployed
+   - An OpenAI model deployed (configurable via `MODEL_DEPLOYMENT_NAME`)
    - Public network access enabled (required for MCP)
 4. **GitHub Personal Access Token** with `repo` scope
+5. **Foundry project connection** for the GitHub MCP server (stores the PAT)
 
 ## Quickstart
 
@@ -71,11 +70,23 @@ cp .env.sample .env
 2. Click **Generate new token (classic)**
 3. Select scopes:
    - `repo` - Full control of private repositories
-4. Copy the token to your `.env` file as `GITHUB_PAT`
+4. Copy the token — you'll need it for the project connection
 
-> **Security**: The PAT is passed at runtime via MCP headers and is **never persisted** on the agent.
+### 3. Create the MCP project connection
 
-### 3. Create the agent
+1. Open the [Microsoft Foundry portal](https://ai.azure.com)
+2. Navigate to your project
+3. Go to **Connected resources** (or **Settings → Connections**)
+4. Click **+ New connection** → **Custom keys**
+5. Configure:
+   - **Connection name**: e.g., `github-mcp` (use this as `MCP_CONNECTION_NAME` in `.env`)
+   - **Credential name**: `Authorization`
+   - **Credential value**: `Bearer <your-github-pat>`
+6. Save the connection
+
+> **Security**: The PAT is stored in the Foundry project connection, not on the agent definition itself.
+
+### 4. Create the agent
 
 ```bash
 python create_agent.py
@@ -83,7 +94,7 @@ python create_agent.py
 
 This creates the agent in your Azure AI Foundry project and saves the agent name to `.agent_name`.
 
-### 4. Chat with the agent
+### 5. Chat with the agent
 
 ```bash
 python ask_agent.py
@@ -143,8 +154,8 @@ Created PR #43: "Add greeting function (Fixes #42)" - ready for review!
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `PROJECT_ENDPOINT` | Yes | Azure AI Foundry project endpoint |
-| `MODEL_DEPLOYMENT_NAME` | Yes | Model deployment (e.g., `gpt-5.2`) |
-| `GITHUB_PAT` | Yes | GitHub Personal Access Token |
+| `MODEL_DEPLOYMENT_NAME` | Yes | Model deployment name |
+| `MCP_CONNECTION_NAME` | Yes | Foundry project connection name for GitHub MCP auth |
 | `AGENT_NAME` | No | Agent name (default: `enterprise-github-agent`) |
 | `GITHUB_REPO` | No | Default repo for demo prompts (e.g., `owner/repo`) |
 
@@ -166,37 +177,38 @@ See [GitHub MCP Server docs](https://github.com/github/github-mcp-server) for fu
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Runtime Only (Per-Request)               │
+│                  Foundry Project Connection                  │
 │  ┌─────────────┐                                            │
-│  │ GITHUB_PAT  │──► MCP Approval Response ──► GitHub API    │
-│  └─────────────┘    (headers injected)                      │
+│  │ GITHUB_PAT  │──► Project Connection ──► GitHub MCP Server  │
+│  └─────────────┘    (stores cred)       (receives header)   │
 │        │                                                     │
-│        └── NOT stored on agent definition                   │
-│            NOT visible in Azure AI Foundry portal           │
-│            Injected only when approving MCP tool calls      │
+│        └── NOT stored on agent definition                    │
+│            Stored in project-level connection only           │
+│            MCP tool calls still require approval             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-- **PAT is injected at runtime** via `headers` in MCP approval responses
-- **Tool calls require approval** (`require_approval="always"` on agent)
+- **PAT stored in Foundry project connection** — not on the agent definition
+- **MCP tool calls require approval** (`require_approval="always"` on agent)
 - **Agent only has permissions** that the PAT grants
-- **Revoke access** by regenerating or deleting the PAT
+- **Revoke access** by updating or deleting the project connection
 
 ## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
 | "Agent not found" | Run `create_agent.py` again |
-| "401 Unauthorized" from GitHub | Check GITHUB_PAT is valid and has `repo` scope |
+| "401 Unauthorized" from GitHub | Check that the project connection has a valid PAT with `repo` scope |
 | "mcp_approval_request" not handled | Ensure `require_approval="always"` is set on the MCPTool |
 | "Rate limit exceeded" | Wait or use a different PAT; check Azure model quotas |
-| Import errors | Ensure `azure-ai-projects>=2.0.0b2` is installed |
+| Import errors | Ensure `azure-ai-projects>=2.0.0` is installed |
 
 ## Related Docs
 
 - [Azure AI Projects SDK (PyPI)](https://pypi.org/project/azure-ai-projects/)
-- [Azure AI Projects SDK Samples](https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/ai/azure-ai-projects/samples)
-- [MCP Tool Sample](https://github.com/Azure/azure-sdk-for-python/blob/azure-ai-projects_2.0.0b2/sdk/ai/azure-ai-projects/samples/agents/tools/sample_agent_mcp.py)
-- [Azure AI Foundry Quickstart](https://learn.microsoft.com/en-us/azure/ai-foundry/quickstarts/get-started-code)
+- [Azure AI Projects SDK Samples](https://aka.ms/azsdk/azure-ai-projects-v2/python/samples/)
+- [MCP Tool Documentation](https://learn.microsoft.com/azure/foundry/agents/how-to/tools/model-context-protocol?pivots=python)
+- [MCP Authentication](https://learn.microsoft.com/azure/foundry/agents/how-to/mcp-authentication)
+- [Azure AI Foundry Quickstart](https://learn.microsoft.com/azure/foundry/agents/quickstart)
 - [GitHub MCP Server](https://github.com/github/github-mcp-server)
 - [Code Interpreter Tool](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/code-interpreter)

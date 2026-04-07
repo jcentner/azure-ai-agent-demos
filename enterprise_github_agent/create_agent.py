@@ -2,10 +2,10 @@
 """
 create_agent.py — Create an Azure AI Foundry Agent with GitHub MCP + Code Interpreter.
 
-Uses the new Foundry SDK (azure-ai-projects --pre) with:
+Uses the GA Foundry SDK (azure-ai-projects>=2.0.0) with:
 - Official GitHub MCP server (https://api.githubcopilot.com/mcp/)
 - Code Interpreter for writing and testing code
-- GPT-5.2 model deployment
+- Configurable model deployment
 
 Saves the agent name to ./.agent_name for ask_agent.py to use.
 """
@@ -32,6 +32,7 @@ def main():
     # Required config
     endpoint = os.environ["PROJECT_ENDPOINT"]
     model = os.environ["MODEL_DEPLOYMENT_NAME"]
+    mcp_connection = os.environ["MCP_CONNECTION_NAME"]
     agent_name = os.environ.get("AGENT_NAME", "enterprise-github-agent")
 
     # Connect to the Azure AI Foundry project
@@ -55,12 +56,13 @@ When helping with development tasks:
 You work with the user's GitHub repositories using their personal access token for authentication."""
 
     # Define tools for the agent
-    # Note: GitHub PAT is injected at runtime via MCP tool headers
+    # GitHub PAT is stored in a Foundry project connection (not on the agent definition)
     tools = [
         MCPTool(
             server_label="github",
             server_url=GITHUB_MCP_URL,
-            require_approval="always",  # Require approval for each MCP tool call
+            require_approval="always",
+            project_connection_id=mcp_connection,
         ),
         CodeInterpreterTool(),
     ]

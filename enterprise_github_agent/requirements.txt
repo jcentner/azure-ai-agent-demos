@@ -1,5 +1,5 @@
-# Azure AI Foundry SDK (preview) - new Foundry API
-azure-ai-projects>=2.0.0b2
+# Azure AI Foundry SDK (GA) - v2 API surface
+azure-ai-projects>=2.0.0
 azure-identity
 python-dotenv
 openai
