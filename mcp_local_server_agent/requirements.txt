@@ -1,0 +1,10 @@
+# MCP server dependencies
+mcp[cli]>=1.0.0
+starlette>=0.38
+uvicorn>=0.30
+
+# Azure AI Foundry SDK (GA) - v2 API surface
+azure-ai-projects>=2.0.0
+azure-identity
+python-dotenv
+openai
