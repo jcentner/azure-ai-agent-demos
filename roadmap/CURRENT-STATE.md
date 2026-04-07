@@ -8,8 +8,8 @@
 - `docs/vision/VISION-LOCK.md` — Vision lock v1.3 — credential isolation pattern, GA SDK
 - `docs/architecture/decisions/` — 4 ADRs (two-script pattern, project connection auth, GA v2 SDK, flat layout)
 - `.github/skills/azure-docs-research/` — Skill for grounding answers in official MS docs
-- `docs/` — Documentation skeleton (architecture, reference docs)
-- `roadmap/phases/` — Phase 1 (complete), Phase 2 (complete), Phase 3 (complete)
+- `docs/` — Architecture overview, glossary, tech debt tracker, reference docs
+- `roadmap/phases/` — Phase 1 (complete), Phase 2 (complete), Phase 3 (complete), Phase 4 (complete)
 - `AGENTS.md` — Cross-agent instructions
 - `enterprise_github_agent/` — Complete v2 demo: validated GA SDK patterns, project connection auth, typed MCP approvals, 42 passing tests
 - `mcp_mslearn_agent/` — Complete v2 demo: public MS Learn MCP server, no auth, auto-approved, 41 passing tests
@@ -19,11 +19,11 @@
 
 ## Current Phase
 
-Phase 3: MCP Local Server Agent v2 Rewrite — **COMPLETE**
+Phase 4: Cross-Cutting Polish — **COMPLETE**
 
 ## Next Action
 
-Begin Phase 4: Cross-cutting polish — `.env.sample` files, architecture docs, shared utilities (if warranted).
+Begin Phase 5: Fabric Data Agent — natural language queries against Fabric lakehouse via `MicrosoftFabricPreviewTool`.
 
 ## Blocked / Unresolved
 
