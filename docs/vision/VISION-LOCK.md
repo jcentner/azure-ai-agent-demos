@@ -1,7 +1,7 @@
 # Azure AI Agent Demos — Vision Lock
 
-**Version**: v1.3
-**Last updated**: 2026-04-07
+**Version**: v1.4
+**Last updated**: 2026-07-23
 
 ## Problem Statement
 
@@ -13,10 +13,16 @@ Azure developers learning to build AI agents with Azure AI Foundry — specifica
 - Want hands-on examples of agent capabilities (MCP integrations, Code Interpreter, file search, grounding, and more)
 - Need practical patterns for streaming output, tool call visibility, and runtime auth
 - Are following an accompanying walkthrough video/content series
+- Are new Foundry support engineers completing a connected, instructor-led training module
 
 ## Core Concept
 
-A collection of **self-contained Python demos**, each showcasing a distinct Azure AI Foundry Agent capability or integration pattern. Demos span MCP server connections, Code Interpreter, file search, grounding, and other tool types. Every demo follows a consistent two-script pattern (`create_agent.py` + `ask_agent.py`) with streaming console output and clear documentation. The v1 archive is preserved for reference; active development targets the GA v2 SDK and new Foundry portal.
+A collection of **self-contained Python demos**, each showcasing a distinct Azure AI Foundry Agent
+capability or integration pattern, plus explicitly scoped **training suites** that support connected
+learning modules. Every standalone demo follows a consistent two-script pattern
+(`create_agent.py` + `ask_agent.py`). Training suites may use staged scripts, shared setup, and
+cross-lab dependencies when the learning sequence requires them. The v1 archive is preserved for
+reference; active development targets the GA v2 SDK and new Foundry portal.
 
 ## Explicit Non-Goals
 
@@ -28,7 +34,9 @@ A collection of **self-contained Python demos**, each showcasing a distinct Azur
 
 ## Product Constraints
 
-- Every demo must be runnable independently with its own README, requirements, and `.env.sample`
+- Every standalone demo must be runnable independently with its own README, requirements, and `.env.sample`
+- A training suite must have one top-level setup guide, pinned dependencies, sample configuration,
+  a preflight check, and a README for each lab
 - Auth credentials (where applicable) must never be persisted on agent definitions — runtime injection only
 - V1 code in `archive/v1/` must remain untouched (referenced by existing walkthrough content)
 - Demos require an Azure AI Foundry project with public network access enabled
@@ -85,6 +93,7 @@ See [ADR-003](../architecture/decisions/003-v2-sdk-and-openai-responses-api.md) 
 | V2 Enterprise GitHub agent (`enterprise_github_agent/`) | Validated against GA SDK, fixed auth and API patterns | Compiles, not live-tested |
 | V2 MS Learn agent (`mcp_mslearn_agent/`) | Complete v2 demo: public MCP server, auto-approved, 41 tests | Compiles, not live-tested |
 | V2 Local server agent (`mcp_local_server_agent/`) | Complete v2 demo: custom MCP server, approval flow, 84 tests | Compiles, not live-tested |
+| L200 tools training suite (`training/l200-tools/`) | Three connected support-engineer labs with shared workstation setup | Compiles; live lab behavior previously validated |
 | Documentation skeleton | Empty templates in `docs/` | Yes |
 | Enterprise agent plan (`.github/prompts/plan-enterpriseGitHubAgent.prompt.md`) | Detailed plan, partially diverges from actual code | Yes |
 
@@ -101,14 +110,18 @@ See [ADR-003](../architecture/decisions/003-v2-sdk-and-openai-responses-api.md) 
 | Each demo has complete README with prerequisites, setup, and walkthrough | Not started |
 | Each demo has `.env.sample` with all required variables | Not started |
 | Architecture docs reflect actual implementation | Not started |
+| L200 tools training suite provides a clean-machine setup path and three connected labs | Complete |
 
-## Architecture Invariants
+## Standalone Demo Architecture Invariants
 
 1. **Two-script pattern** — Every demo has `create_agent.py` (provision once) + `ask_agent.py` (interactive REPL). No exceptions.
 2. **Credential isolation** — Where external services require credentials, they are stored in Foundry project connections and referenced by name, never embedded in agent definitions.
 3. **Streaming with tool visibility** — All demos show streaming token output with visible tool call indicators.
 4. **Self-contained demos** — Each demo directory contains everything needed to run it independently.
 5. **Flat file layout** — Demo directories use flat structure (no nested `agent/` or `server/` subdirectories), except where a separate MCP server is required.
+
+These invariants apply to standalone demos. A suite under `training/` may use staged scripts, shared
+dependencies, and cross-lab state when those choices are part of the learning design. See ADR-005.
 
 ## Where We're Going
 
@@ -148,3 +161,4 @@ Priority-ordered phases:
 | v1.1 | 2026-04-07 | Broadened scope beyond MCP-only; updated SDK from beta to GA per human feedback |
 | v1.2 | 2026-04-07 | Added Phases 5-7: Fabric Data Agent, Multi-Tool Knowledge Worker, Browser Automation |
 | v1.3 | 2026-04-07 | Architecture Invariant #2 updated: "credential isolation" via project connections (not runtime header injection). Enterprise agent prototype validated. |
+| v1.4 | 2026-07-23 | Added connected training suites as an explicit repository content type and approved the L200 tools suite exception. |
