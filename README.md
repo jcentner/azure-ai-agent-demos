@@ -17,6 +17,19 @@ Every demo follows a consistent pattern:
 - `requirements.txt` — Python dependencies
 - `README.md` — Setup and walkthrough
 
+## Training labs
+
+The [`training/l200-tools/`](training/l200-tools/) suite accompanies the L200 Foundry tools training
+module for support engineers. Unlike the standalone demos, these labs form one sequence and share a
+single Python environment:
+
+1. Toolbox versioning
+2. Azure AI Search grounding
+3. Foundry IQ knowledge base
+
+The training README starts with Python, Git, Azure CLI, virtual-environment, dependency, and
+configuration setup for learners who have not used Python before.
+
 ## Quick Start
 
 ```bash

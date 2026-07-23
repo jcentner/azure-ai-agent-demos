@@ -10,6 +10,7 @@ Record significant architecture decisions here. Each ADR documents the context, 
 | 002 | [Runtime-Only Auth Injection for MCP](002-runtime-only-auth-injection.md) | Accepted |
 | 003 | [GA V2 SDK with Conversations and Responses API](003-v2-sdk-and-openai-responses-api.md) | Accepted |
 | 004 | [Flat Demo Directory Layout](004-flat-demo-directory-layout.md) | Accepted |
+| 005 | [Connected Training Suites](005-connected-training-suites.md) | Accepted |
 
 ## ADR Template
 

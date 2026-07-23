@@ -27,3 +27,7 @@ Project-specific terms and their definitions.
 **Streamable HTTP** — The MCP transport protocol used for remote agent↔server connections. Runs over standard HTTP (not stdio).
 
 **Two-script pattern** — Architecture invariant: every demo has `create_agent.py` (provision once) + `ask_agent.py` (interactive REPL). See ADR-001.
+
+**Training suite** — A set of connected labs under `training/` that share workstation setup,
+dependencies, configuration, or state. Training suites are documented exceptions to the standalone
+demo invariants. See ADR-005.

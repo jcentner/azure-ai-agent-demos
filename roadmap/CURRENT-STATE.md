@@ -1,12 +1,12 @@
 # Azure AI Agent Demos — Current State
 
-**Phase Status**: Complete
+**Phase Status**: L200 tools training package complete
 
 ## What Exists
 
 - `.github/` — Copilot agents, prompts, hooks, and instructions for autonomous development
-- `docs/vision/VISION-LOCK.md` — Vision lock v1.3 — credential isolation pattern, GA SDK
-- `docs/architecture/decisions/` — 4 ADRs (two-script pattern, project connection auth, GA v2 SDK, flat layout)
+- `docs/vision/VISION-LOCK.md` — Vision lock v1.4 — standalone demos plus connected training suites
+- `docs/architecture/decisions/` — 5 ADRs, including the connected-training-suite exception
 - `.github/skills/azure-docs-research/` — Skill for grounding answers in official MS docs
 - `docs/` — Architecture overview, glossary, tech debt tracker, reference docs
 - `roadmap/phases/` — Phase 1 (complete), Phase 2 (complete), Phase 3 (complete), Phase 4 (complete)
@@ -14,12 +14,14 @@
 - `enterprise_github_agent/` — Complete v2 demo: validated GA SDK patterns, project connection auth, typed MCP approvals, 42 passing tests, **E2E: agent creation verified**
 - `mcp_mslearn_agent/` — Complete v2 demo: public MS Learn MCP server, no auth, auto-approved, 41 passing tests, **E2E: fully verified (create + conversation + streaming + MCP tool calls)**
 - `mcp_local_server_agent/` — Complete v2 demo: custom MCP server (Chinook SQLite), approval flow, optional project connection auth, 84 passing tests, **E2E: fully verified (server + ngrok + create + conversation + approval flow + MCP tool calls)**
+- `training/l200-tools/` — Three connected support-engineer labs with Windows-first workstation
+  setup, one pinned virtual environment, shared `.env`, and a preflight checker
 - `archive/v1/` — Complete, working v1 demos preserved for reference
 - `pyproject.toml` — pytest importlib mode for test isolation across demos
 
 ## Current Phase
 
-E2E Testing — **COMPLETE**
+L200 tools training package — **COMPLETE**
 
 ## E2E Test Results (April 2026)
 
@@ -51,7 +53,8 @@ E2E Testing — **COMPLETE**
 
 ## Next Action
 
-Vision expansion — all three v2 demos are complete and E2E verified. Consider Phase 5 (Fabric Data Agent) or other new demos.
+Publish the L200 tools suite with the training module, then continue with Phase 5 or another approved
+demo.
 
 ## Blocked / Unresolved
 
@@ -67,12 +70,18 @@ Vision expansion — all three v2 demos are complete and E2E verified. Consider 
 - **E2E testing complete** — 2/3 demos fully verified, 1/3 partially verified (needs manual connection setup)
 - **DB working dir gitignored** — Added `**/db/working/` to .gitignore
 - **Project docs tracked in git** — Removed docs/, roadmap/, AGENTS.md from .gitignore
+- **L200 tools training package complete** — Three connected labs share one pinned environment,
+  configuration file, and preflight checker
 - ADR-001: Two-script demo pattern (create + ask)
 - ADR-002: MCP credentials via Foundry project connections (NOT runtime header injection)
 - ADR-003: GA V2 SDK with both response-chaining and Conversations API patterns
 - ADR-004: Flat demo directory layout (server/ exception for MCP server demos)
+- ADR-005: Connected training suites live under `training/` and may share setup and state
 
 ## Files Modified This Session
 
 - `.gitignore` — Added `**/db/working/` to ignore MCP server working DB copies
 - `roadmap/CURRENT-STATE.md` — Updated with E2E test results
+- `training/l200-tools/` — Added the portable L200 tools training suite
+- `docs/vision/VISION-LOCK.md` — Approved v1.4 training-suite exception
+- `docs/architecture/decisions/005-connected-training-suites.md` — Recorded the training layout
