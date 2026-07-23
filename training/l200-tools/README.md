@@ -56,12 +56,13 @@ az version
 Clone the repository:
 
 ```bash
-git clone https://github.com/jcentner/azure-ai-agent-demos.git
+git clone --branch l200-tools-v1.0.1 --depth 1 https://github.com/jcentner/azure-ai-agent-demos.git
 cd azure-ai-agent-demos/training/l200-tools
 ```
 
-If Git is unavailable, download the repository ZIP from GitHub, extract it, and open
-`training/l200-tools`.
+If Git is unavailable, download the
+[l200-tools-v1.0.1 ZIP archive](https://github.com/jcentner/azure-ai-agent-demos/archive/refs/tags/l200-tools-v1.0.1.zip),
+extract it, and open `training/l200-tools`.
 
 ## Step 3: Create the shared Python environment
 
