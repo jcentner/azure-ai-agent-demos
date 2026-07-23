@@ -56,12 +56,12 @@ az version
 Clone the repository:
 
 ```bash
-git clone --branch l200-tools-v1.0.1 --depth 1 https://github.com/jcentner/azure-ai-agent-demos.git
+git clone --branch l200-tools-v1.0.2 --depth 1 https://github.com/jcentner/azure-ai-agent-demos.git
 cd azure-ai-agent-demos/training/l200-tools
 ```
 
 If Git is unavailable, download the
-[l200-tools-v1.0.1 ZIP archive](https://github.com/jcentner/azure-ai-agent-demos/archive/refs/tags/l200-tools-v1.0.1.zip),
+[l200-tools-v1.0.2 ZIP archive](https://github.com/jcentner/azure-ai-agent-demos/archive/refs/tags/l200-tools-v1.0.2.zip),
 extract it, and open `training/l200-tools`.
 
 ## Step 3: Create the shared Python environment
@@ -109,8 +109,8 @@ If the browser cannot open, use:
 az login --use-device-code
 ```
 
-Confirm that the active subscription contains the Foundry project used for the labs. Change it when
-needed:
+Use the non-production subscription assigned to you for support-engineer training. Do not use a
+customer or production subscription. Confirm the active subscription and change it when needed:
 
 ```bash
 az account set --subscription "<subscription-name-or-id>"
@@ -143,6 +143,22 @@ Fill in the values:
 | `PROJECT_RESOURCE_ID` | 3 | Azure portal JSON view for the Foundry project resource. |
 | `AOAI_ENDPOINT` | 3 | Azure portal endpoint for the Foundry resource, ending in `.openai.azure.com`. |
 | `MODEL_NAME` | 3 | Optional. Set only when the underlying model name differs from the deployment name. |
+
+The values below are examples only. Your resource, project, connection, deployment, subscription,
+and resource-group names will be different:
+
+```dotenv
+PROJECT_ENDPOINT=https://support-lab-ai.services.ai.azure.com/api/projects/support-lab
+MODEL_DEPLOYMENT_NAME=support-lab-model
+SEARCH_CONNECTION_NAME=support-lab-search
+PROJECT_RESOURCE_ID=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-support-lab/providers/Microsoft.CognitiveServices/accounts/support-lab-ai/projects/support-lab
+AOAI_ENDPOINT=https://support-lab-ai.openai.azure.com
+MODEL_NAME=gpt-5-mini
+```
+
+`MODEL_DEPLOYMENT_NAME` is the name assigned to the deployment. `MODEL_NAME` is the underlying
+catalog model shown in the deployment details. Select a current model supported by the tools in the
+lab instead of copying the example model automatically.
 
 Do not commit `.env`. It is excluded by the repository's `.gitignore`.
 
