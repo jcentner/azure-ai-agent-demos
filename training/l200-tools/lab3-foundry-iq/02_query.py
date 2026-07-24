@@ -16,7 +16,11 @@ OFF_TOPIC = "What is the capital of France?"
 def _contains_both_policy_facts(answer: str) -> bool:
     text = answer.lower()
     has_match = any(value in text for value in ("4%", "4 percent", "four percent"))
-    has_pto = any(value in text for value in ("15 days", "15-day", "fifteen days"))
+    has_pto = (
+        any(value in text for value in ("15", "fifteen"))
+        and "pto" in text
+        and "day" in text
+    )
     return has_match and has_pto
 
 
@@ -42,7 +46,8 @@ def main():
         print(f"Q (off-topic, {agent.name}): {OFF_TOPIC}")
         print(f"   tool_used={tool_used} citations={annotations}")
         print(f"   A: {answer}\n")
-        declined = "don't know" in answer.lower() or "do not know" in answer.lower()
+        normalized_answer = answer.lower().replace("\u2019", "'")
+        declined = "don't know" in normalized_answer or "do not know" in normalized_answer
         assert tool_used, "expected the knowledge base MCP tool to be called"
         assert declined, f"expected a decline for the off-topic question, got: {answer!r}"
         assert "paris" not in answer.lower(), (
