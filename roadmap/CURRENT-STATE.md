@@ -23,6 +23,9 @@
 
 L200 tools training package — **COMPLETE**
 
+The `l200-tools-v1.0.3` follow-up clarifies Python 3.11+ setup on Windows and documents the Lab 3
+knowledge-source dependency when resetting Lab 2.
+
 ## E2E Test Results (April 2026)
 
 ### mcp_mslearn_agent — FULLY VERIFIED
@@ -72,6 +75,8 @@ demo.
 - **Project docs tracked in git** — Removed docs/, roadmap/, AGENTS.md from .gitignore
 - **L200 tools training package complete** — Three connected labs share one pinned environment,
   configuration file, and preflight checker
+- **L200 review follow-up complete** — Windows setup no longer assumes the `py` launcher, and Lab 2
+  explains how to reset a Lab 3 knowledge-base dependency
 - ADR-001: Two-script demo pattern (create + ask)
 - ADR-002: MCP credentials via Foundry project connections (NOT runtime header injection)
 - ADR-003: GA V2 SDK with both response-chaining and Conversations API patterns

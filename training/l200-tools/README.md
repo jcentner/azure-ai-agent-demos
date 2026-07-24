@@ -12,7 +12,7 @@ Lab 3 reuses the Azure AI Search index created in Lab 2.
 ## What you need
 
 - A Windows, macOS, or Linux workstation.
-- Python 3.11 or 3.12.
+- Python 3.11 or later.
 - Git.
 - Azure CLI.
 - Access to the Foundry and Azure resources listed in each lab.
@@ -24,23 +24,25 @@ Visual Studio Code is optional. If you use it, install the Microsoft Python exte
 ### Windows
 
 1. Install [Git for Windows](https://git-scm.com/download/win).
-2. Install [Python 3.12](https://www.python.org/downloads/windows/). Select **Add python.exe to
-   PATH** during installation.
+2. Install [Python 3.11 or later](https://www.python.org/downloads/windows/). Select
+   **Add python.exe to PATH** during installation.
 3. Install the [Azure CLI for Windows](https://learn.microsoft.com/cli/azure/install-azure-cli-windows).
 4. Open a new PowerShell window and verify:
 
    ```powershell
    git --version
-   py -3.12 --version
+   python --version
    az version
    ```
+
+If `python` is unavailable but the Python launcher is installed, use `py -3 --version`.
 
 ### macOS or Linux
 
 Install:
 
 - [Git](https://git-scm.com/downloads);
-- [Python 3.11 or 3.12](https://www.python.org/downloads/);
+- [Python 3.11 or later](https://www.python.org/downloads/);
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 
 Verify:
@@ -56,12 +58,12 @@ az version
 Clone the repository:
 
 ```bash
-git clone --branch l200-tools-v1.0.2 --depth 1 https://github.com/jcentner/azure-ai-agent-demos.git
+git clone --branch l200-tools-v1.0.3 --depth 1 https://github.com/jcentner/azure-ai-agent-demos.git
 cd azure-ai-agent-demos/training/l200-tools
 ```
 
 If Git is unavailable, download the
-[l200-tools-v1.0.2 ZIP archive](https://github.com/jcentner/azure-ai-agent-demos/archive/refs/tags/l200-tools-v1.0.2.zip),
+[l200-tools-v1.0.3 ZIP archive](https://github.com/jcentner/azure-ai-agent-demos/archive/refs/tags/l200-tools-v1.0.3.zip),
 extract it, and open `training/l200-tools`.
 
 ## Step 3: Create the shared Python environment
@@ -71,11 +73,14 @@ Use one virtual environment for all three labs.
 ### Windows PowerShell
 
 ```powershell
-py -3.12 -m venv .venv
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
+
+If `python` is unavailable but the Python launcher is installed, create the environment with
+`py -3 -m venv .venv`, then use `python` after activation.
 
 If PowerShell blocks the activation script, allow it for the current window and retry:
 
@@ -195,7 +200,7 @@ Do not run the Lab 2 cleanup if you plan to continue directly to Lab 3.
 
 | Symptom | Fix |
 |---|---|
-| `python` opens the Microsoft Store or is not recognized | On Windows, use `py -3.12` to create the environment, then use `python` after activation. |
+| `python` opens the Microsoft Store or is not recognized | Reinstall Python with **Add python.exe to PATH**, or use `py -3 -m venv .venv` if the Python launcher is available. |
 | `No virtual environment is active` | Run the activation command from Step 3. |
 | `ModuleNotFoundError` | Activate `.venv`, then run `python -m pip install -r requirements.txt`. |
 | `az` is not recognized | Install Azure CLI, close the terminal, and open a new one. |
