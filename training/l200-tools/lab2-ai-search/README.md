@@ -66,6 +66,7 @@ python 00_reset.py
 | Symptom | Check |
 |---|---|
 | `Access denied` or `tool_user_error` | Verify roles are assigned to the Foundry project managed identity and allow time for propagation. |
+| `00_reset.py` says the index is referenced by a knowledge source | Lab 3 still references the index. Run `../lab3-foundry-iq/00_reset.py` first, or continue because Lab 2 reuses the existing index. |
 | The index contains no documents | Confirm the six Markdown files exist in `data/` and rerun `01_create_index.py`. |
 | The agent returns an uncited answer | Confirm the Search tool is attached and the selected model supports Azure AI Search. |
 | The wrong Search service is used | Verify `SEARCH_CONNECTION_NAME` in `../.env`. |
