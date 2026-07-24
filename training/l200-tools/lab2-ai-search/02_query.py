@@ -35,7 +35,8 @@ def main():
     print(f"Q (off-topic): {off_topic}")
     print(f"   tool_used={tool_used} citations={annotations}")
     print(f"   A: {answer}\n")
-    declined = "don't know" in answer.lower() or "do not know" in answer.lower()
+    normalized_answer = answer.lower().replace("\u2019", "'")
+    declined = "don't know" in normalized_answer or "do not know" in normalized_answer
     assert declined, f"expected a decline for the off-topic question, got: {answer!r}"
     assert "paris" not in answer.lower(), f"agent answered from memory instead of declining: {answer!r}"
 
